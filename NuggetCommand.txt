@@ -1,0 +1,1 @@
+nuget pack -build EPiServer.Sample.YouTubeProvider.csproj -Properties "Configuration=Release;Platform=AnyCPU" -Build -OutputDirectory "C:\_Nuget"
