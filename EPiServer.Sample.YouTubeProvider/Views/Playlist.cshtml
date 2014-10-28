@@ -1,0 +1,23 @@
+﻿@inherits System.Web.Mvc.WebViewPage
+@{
+	var model = Model as EPiServer.Sample.YouTubeProvider.Models.ViewModels.YouTubePlaylistModel;
+}
+
+<h2>@model.Playlist.Name</h2>
+<p>@model.Playlist.Description</p>
+<br /><br />
+@foreach (var item in model.PlaylistItems)
+{
+	<div class="listResult">
+		<a href="https://www.youtube.com/watch?v=@item.VideoId" target="_blank">
+			<img src="@item.ThumbnailUrl" height="100">
+		</a>
+		<h3>
+			@item.Name
+		</h3>
+		<p class="date">@item.Published</p>
+		
+		<p>@item.Description</p>
+		<hr />
+</div>
+}

@@ -1,0 +1,2303 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>EPiServer.Events</name>
+    </assembly>
+    <members>
+        <member name="T:EPiServer.Events.ChangeNotification.BulkChangeItem`1">
+            <summary>
+            Encapsulates a change for inclusion in a bulk change notification.
+            </summary>
+            <typeparam name="TChangedData">The type of the changed data.</typeparam>
+        </member>
+        <member name="T:EPiServer.Events.ChangeNotification.IBulkChangeItem">
+            <summary>
+            An interface describing a single change to inclusion in a bulk change notification.
+            </summary>
+        </member>
+        <member name="M:EPiServer.Events.ChangeNotification.BulkChangeItem.ForChange``1(``0,``0)">
+            <summary>
+            Creates a <see cref="T:EPiServer.Events.ChangeNotification.BulkChangeItem`1"/>.
+            </summary>
+            <typeparam name="T">The type of the changed data.</typeparam>
+            <param name="before">The before value.</param>
+            <param name="after">The after value.</param>
+            <returns>A new <see cref="T:BulkChangeItem{T}"/> representing the specified change.</returns>
+        </member>
+        <member name="M:EPiServer.Events.ChangeNotification.BulkChangeItem.ForInsert``1(``0)">
+            <summary>Creates a <see cref="T:BulkChangeItem{T}"/> that represents an insert.</summary>
+            <typeparam name="T">The type of the changed data.</typeparam>
+            <param name="insertedItem">The item being inserted.</param>
+            <returns>
+            A new <see cref="T:BulkChangeItem{T}"/> representing the insertion of 
+            <paramref name="insertedItem"/>.
+            </returns>
+        </member>
+        <member name="M:EPiServer.Events.ChangeNotification.BulkChangeItem.ForDelete``1(``0)">
+            <summary>Creates a <see cref="T:BulkChangeItem{T}"/> that represents a delete.</summary>
+            <typeparam name="T">The type of the changed data.</typeparam>
+            <param name="deletedItem">The item being deleted.</param>
+            <returns>
+            A new <see cref="T:BulkChangeItem{T}"/> representing the deletion of 
+            <paramref name="deletedItem"/>.
+            </returns>
+        </member>
+        <member name="T:EPiServer.Events.ChangeNotification.IBulkChangeItem`1">
+            <summary>
+            An interface describing a strongly typed single change for inclusion in a bulk change notification.
+            </summary>
+            <typeparam name="TChangedData"></typeparam>
+        </member>
+        <member name="T:EPiServer.Events.ChangeNotification.EventQueue.IDequeueResult`1">
+            <summary>
+            A result object for calls to <see cref="M:IChangeNotificationQueue`1.Dequeue(int)"/>.
+            </summary>
+            <typeparam name="T">The type of item in the queue.</typeparam>
+            <remarks>
+            For internal use only.
+            </remarks>
+        </member>
+        <member name="M:EPiServer.Events.ChangeNotification.EventQueue.IDequeueResult`1.CompleteBatch(System.Boolean)">
+            <summary>
+            Notifies the queue that the caller is done with this batch.
+            </summary>
+            <param name="success">True if the batch was successfully processed, false if not.</param>
+        </member>
+        <member name="P:EPiServer.Events.ChangeNotification.EventQueue.IDequeueResult`1.ItemCount">
+            <summary>
+            Gets the number of items in the batch.
+            </summary>
+        </member>
+        <member name="P:EPiServer.Events.ChangeNotification.EventQueue.IDequeueResult`1.Items">
+            <summary>
+            Gets an enumerable of the dequeued items.
+            </summary>
+            <exception cref="T:System.InvalidOperationException">CompleteBatch has already been called, and the implementation no longer has the items.</exception>
+        </member>
+        <member name="T:EPiServer.Events.ChangeNotification.EventQueue.IChangeNotificationQueue">
+            <summary>
+            IChangeNotificationQueue describes a backing store for the change notification system.
+            </summary>
+            <remarks>For internal use only.</remarks>
+        </member>
+        <member name="M:EPiServer.Events.ChangeNotification.EventQueue.IChangeNotificationQueue.Connect">
+            <summary>
+            Opens a connection the queue, if not already open.
+            </summary>
+        </member>
+        <member name="M:EPiServer.Events.ChangeNotification.EventQueue.IChangeNotificationQueue.GetStatus">
+            <summary>
+            Gets the current status and queue size of a processor from the queue.
+            </summary>
+            <returns>The current status and queue size of the processor.</returns>
+        </member>
+        <member name="M:EPiServer.Events.ChangeNotification.EventQueue.IChangeNotificationQueue.SetInvalid">
+            <summary>
+            Invalidates the queue.
+            </summary>
+        </member>
+        <member name="M:EPiServer.Events.ChangeNotification.EventQueue.IChangeNotificationQueue.TrySetValid">
+            <summary>
+            Sets the queue status to Valid, if the current status is Recovering; otherwise, does nothing.
+            </summary>
+            <returns>True if the status is changed from Recovering to Valid; otherwise, false.</returns>
+        </member>
+        <member name="M:EPiServer.Events.ChangeNotification.EventQueue.IChangeNotificationQueue.TrySetRecovering">
+            <summary>
+            Sets the queue status to Recovering, if the current status is Invalid; otherwise, does nothing.
+            </summary>
+            <returns>True if the status is change from Invalid to Recovering; otherwise, false.</returns>
+        </member>
+        <member name="M:EPiServer.Events.ChangeNotification.EventQueue.IChangeNotificationQueue.HeartBeat">
+            <summary>
+            Notifies the queue that the change notification system is still running.  Expected to be called regularly.
+            </summary>
+        </member>
+        <member name="T:EPiServer.Events.ChangeNotification.EventQueue.IChangeNotificationQueue`1">
+            <summary>
+            IChangeNotificationQueue describes a backing store for the change notification system.
+            </summary>
+            <typeparam name="T">The type of item in the queue.</typeparam>
+            <remarks>For internal use only.</remarks>
+        </member>
+        <member name="M:EPiServer.Events.ChangeNotification.EventQueue.IChangeNotificationQueue`1.Enqueue(System.Collections.Generic.IEnumerable{`0})">
+            <summary>
+            Enqueues items into the queue.
+            </summary>
+            <param name="items">The items to enqueue.</param>
+        </member>
+        <member name="M:EPiServer.Events.ChangeNotification.EventQueue.IChangeNotificationQueue`1.Dequeue(System.Int32)">
+            <summary>
+            Dequeues a batch of items from the queue.
+            </summary>
+            <param name="maxItems">The maximum number of items to take.</param>
+            <returns>An IDequeueResult object representing the result of the operation.</returns>
+        </member>
+        <member name="T:EPiServer.Events.ChangeNotification.EventQueue.IChangeNotificationQueueFactory">
+            <summary>
+            Factory interface for creating instances of <see cref="T:IChangeNotificationQueue"/>.
+            </summary>
+            <remarks>For internal use only.</remarks>
+        </member>
+        <member name="T:EPiServer.Events.ChangeNotification.EventQueue.InDatabaseQueue`1">
+            <summary>
+            An implementation of <see cref="T:IChangeNotificationQueue{T}"/> for a persistent queue
+            stored in a database.  This is the default implementation.
+            </summary>
+            <typeparam name="T">The type of data stored in the queue.</typeparam>
+        </member>
+        <member name="T:EPiServer.Events.ChangeNotification.EventQueue.InMemoryQueue`1">
+            <summary>
+            An in-memory simulation of <see cref="T:IChangeNotificationQueue{T}"/>
+            for testing purposes.  Not for production usage.
+            </summary>
+            <typeparam name="T">The type of data stored in the queue.</typeparam>
+        </member>
+        <member name="M:EPiServer.Events.ChangeNotification.ChangeNotificationExtensions.NotifyInsert``1(EPiServer.Events.ChangeNotification.IChangeNotificationManager,``0)">
+            <summary>
+            Notifies a <see cref="T:IChangeNotificationManager"/> of an insert operation.
+            </summary>
+            <typeparam name="TChangedData">The type of data being inserted.</typeparam>
+            <param name="changeManager">The <see cref="T:IChangeNotificationManager"/> to notify.</param>
+            <param name="insertedItem">The item being inserted.</param>
+        </member>
+        <member name="M:EPiServer.Events.ChangeNotification.ChangeNotificationExtensions.NotifyDelete``1(EPiServer.Events.ChangeNotification.IChangeNotificationManager,``0)">
+            <summary>
+            Notifies an <see cref="T:IChangeNotificationManager"/> of a delete operation.
+            </summary>
+            <typeparam name="TChangedData">The type of data being deleted.</typeparam>
+            <param name="changeManager">The <see cref="T:IChangeNotificationManager"/> to notify.</param>
+            <param name="deletedItem">The item being deleted.</param>
+        </member>
+        <member name="M:EPiServer.Events.ChangeNotification.ChangeNotificationExtensions.GetQueuedDataType(EPiServer.Events.ChangeNotification.IChangeProcessor)">
+            <summary>
+            Gets the value of the queued data type parameter.
+            </summary>
+            <param name="changeProcessor">The <see cref="T:IChangeProcessor"/> to inspect.</param>
+            <returns>The value of the queued data type parameter.</returns>
+            <exception cref="T:System.ArgumentException">
+            <paramref name="changeProcessor"/> does not implement <see cref="T:IChangeProcessor{TQueuedData}"/>,
+            or implements multiple types of <see cref="T:IChangeProcessor{TQueuedData}"/>.
+            </exception>
+        </member>
+        <member name="M:EPiServer.Events.ChangeNotification.ChangeNotificationExtensions.GetChangedDataType(EPiServer.Events.ChangeNotification.IChangeListener)">
+            <summary>
+            Gets the value of the changed data type parameter.
+            </summary>
+            <param name="changeListener">The <see cref="T:IChangeListener"/> to inspect.</param>
+            <returns>The value of the changed data type parameter.</returns>
+            <exception cref="T:System.ArgumentException">
+            <paramref name="changeListener"/> does not implement <see cref="T:IChangeListener{TChangedData,TQueuedData}"/>,
+            or implements multiple types of <see cref="T:IChangeListener{TChangedData,TQueuedData}"/>.
+            </exception>
+        </member>
+        <member name="M:EPiServer.Events.ChangeNotification.ChangeNotificationExtensions.GetQueuedDataType(EPiServer.Events.ChangeNotification.IChangeListener)">
+            <summary>
+            Gets the value of the queued data type parameter.
+            </summary>
+            <param name="changeListener">The <see cref="T:IChangeListener"/> to inspect.</param>
+            <returns>The value of the queued data type parameter.</returns>
+            <exception cref="T:System.ArgumentException">
+            <paramref name="changeListener"/> does not implement <see cref="T:IChangeListener{TChangedData,TQueuedData}"/>,
+            or implements multiple types of <see cref="T:IChangeListener{TChangedData,TQueuedData}"/>.
+            </exception>
+        </member>
+        <member name="M:EPiServer.Events.ChangeNotification.ChangeNotificationExtensions.Stop(EPiServer.Events.ChangeNotification.IChangeNotificationManager)">
+            <summary>
+            Cancels any running tasks and releases resources, waiting indefinitely for all tasks to complete.
+            </summary>
+            <remarks>
+            <para>The object does not need to be disposed once <see cref="M:Stop"/> has been called.</para>
+            <para>If a non-cancellable recovery is in progress, this call may wait for a very long time.</para>
+            </remarks>
+        </member>
+        <member name="M:EPiServer.Events.ChangeNotification.ChangeNotificationExtensions.GetSingleGenericImplementation``1(``0,System.Type)">
+            <summary>
+            Gets the single interface type implemented by <paramref name="implementation"/> that matches the
+            generic type definition <paramref name="genericInterface"/>.
+            </summary>
+            <typeparam name="T">A base type known to be assignable from the implementation.</typeparam>
+            <param name="implementation">The implementation to inspect.</param>
+            <param name="genericInterface">The generic interface definition to get the implemented type for.</param>
+            <returns>The implemented interface matching the generic interface type.</returns>
+            <exception cref="T:System.ArgumentException">
+            <paramref name="genericInterface"/> is not a generic interface definition.
+            </exception>
+            <exception cref="T:System.InvalidOperationException">
+            <paramref name="implementation"/> does not implement <paramref name="genericInterface"/>,
+            or implements <paramref name="genericInterface"/> multiple times.
+            </exception>
+        </member>
+        <member name="T:EPiServer.Events.ChangeNotification.IChangeListener">
+            <summary>
+            A non-generic wrapper for <see cref="T:IChangeListener{TChangedData,TQueuedData}"/>.
+            </summary>
+        </member>
+        <member name="T:EPiServer.Events.ChangeNotification.IChangeListener`2">
+            <summary>
+            Accepts information about changes to objects of type <typeparamref name="TChangedData"/>,
+            and produces data of type <typeparamref name="TQueuedData"/> for asychronous processing.
+            </summary>
+            <typeparam name="TChangedData">
+            The type of data that the listener is notified of changes on.
+            </typeparam>
+            <typeparam name="TQueuedData">
+            The type of data that the listener will return for asychronous processing.
+            </typeparam>
+        </member>
+        <member name="M:EPiServer.Events.ChangeNotification.IChangeListener`2.NotifyChange(`0,`0)">
+            <summary>
+            Notifies a processor of a change in data of type <typeparamref name="TChangedData"/>
+            </summary>
+            <param name="before">The changed data object, as it was before the change; or null for inserts.</param>
+            <param name="after">The changed data object, as it was after the change; or null for deletes.</param>
+            <returns>An enumeration of data to be processed asynchronously.</returns>
+            <remarks>
+            While there is not a specified use case for calling this method with two null
+            parameters, implementers should accept return an empty result from such a call, and not
+            raise any exceptions.
+            </remarks>
+        </member>
+        <member name="T:EPiServer.Events.ChangeNotification.IChangeNotificationManager">
+            <summary>
+            The IEventManager manages all <see cref="T:IChangeProcessor"/> instances in an application
+            context.
+            </summary>
+        </member>
+        <member name="M:EPiServer.Events.ChangeNotification.IChangeNotificationManager.NotifyChange``1(``0,``0)">
+            <summary>
+            Notifies the system of a data change.
+            </summary>
+            <typeparam name="TChangedData">The type of data that was changed.</typeparam>
+            <param name="before">
+            The changed data object, as it was before the change; or null for inserts.
+            </param>
+            <param name="after">
+            The changed data object, as it was after the change; or null for deletes.
+            </param>
+            <remarks>
+            <para>
+            This should be called only after any transaction changing the data has been fully 
+            completed, and should not access data except what is contained in the arguments.
+            This ensures that a change that will not get committed will not be evaluated; and that 
+            only the specified change, and no later changes, are evaluated.
+            </para>
+            <para>
+            No specific use case is defined for calling this method with two null parameters, but
+            such a call will return without exception.
+            </para>
+            </remarks>
+        </member>
+        <member name="M:EPiServer.Events.ChangeNotification.IChangeNotificationManager.NotifyChanges``1(System.Collections.Generic.IEnumerable{EPiServer.Events.ChangeNotification.IBulkChangeItem{``0}})">
+            <summary>
+            Notifies the system of multiple data changes.  This has the same behavior as calling
+            <see cref="M:IChangeManager.NotifyChange{TChangedData}(TChangedData, TChangedData)"/> on
+            each element of <paramref name="changes"/>, but may be more efficient for large sets of
+            data.
+            </summary>
+            <typeparam name="TChangedData">The type of data that was changed.</typeparam>
+            <param name="changes">Before and after views of each change.</param>
+        </member>
+        <member name="M:EPiServer.Events.ChangeNotification.IChangeNotificationManager.GetProcessorInfo">
+            <summary>
+            Gets the status of all processors managed by this instance.
+            </summary>
+            <returns>
+            An enumerable of <see cref="T:IChangeProcessorInfo"/> objects describing the status
+            of each processor.
+            </returns>
+        </member>
+        <member name="M:EPiServer.Events.ChangeNotification.IChangeNotificationManager.TryStartRecoveryAll">
+            <summary>
+            Starts tasks to recover all processors that are invalid.
+            </summary>
+        </member>
+        <member name="M:EPiServer.Events.ChangeNotification.IChangeNotificationManager.Start">
+            <summary>
+            Starts processing of events and enables status queries and recovery, if not already started.
+            </summary>
+        </member>
+        <member name="M:EPiServer.Events.ChangeNotification.IChangeNotificationManager.Stop(System.TimeSpan)">
+            <summary>
+            Cancels any running tasks and releases resources, waiting for all tasks to complete for
+            up to the timeout interval.
+            </summary>
+            <param name="timeout">
+            The maximum time to wait for tasks to complete, or -1 milliseconds to wait indefinitely.
+            </param>
+            <returns>True if all tasks completed before the timeout elapsed.</returns>
+            <remarks>
+            The object does not need to be disposed if <see cref="M:Stop"/> has been called.
+            </remarks>
+        </member>
+        <member name="T:EPiServer.Events.ChangeNotification.IChangeProcessor">
+            <summary>
+            A non-generic wrapper for <see cref="T:IChangeProcessor{TQueuedData}"/>.
+            </summary>
+        </member>
+        <member name="M:EPiServer.Events.ChangeNotification.IChangeProcessor.RecoverConsistency(EPiServer.Events.ChangeNotification.IRecoveryContext)">
+            <summary>
+            Recovers consistency when the eventual consistency has become invalid.
+            </summary>
+            <param name="recoveryContext">
+            An object for communication between the recovery process and the event manager.
+            </param>
+            <returns>
+            True if consistency is retored to any point in time at or after the call to 
+            RecoverConsistency; otherwise, false.
+            </returns>
+        </member>
+        <member name="P:EPiServer.Events.ChangeNotification.IChangeProcessor.ProcessorId">
+            <summary>
+            Gets a unique identifier for the processor.  This identifier should persist over all 
+            instantiations, identifying the implementation of the event processor in persistent
+            storage.
+            </summary>
+            <remarks>
+            This value is expected to be constant.  This property will only be accessed once, and 
+            the <see cref="T:IChangeNotificationManager"/> will not notice any subsequent changes 
+            to value of this property.
+            </remarks>
+        </member>
+        <member name="P:EPiServer.Events.ChangeNotification.IChangeProcessor.Name">
+            <summary>
+            Gets the display name of the processor.
+            </summary>
+        </member>
+        <member name="P:EPiServer.Events.ChangeNotification.IChangeProcessor.MaxBatchSize">
+            <summary>
+            Gets the maximum number of items that will be passed to <see cref="M:ProcessItems"/> 
+            in a single call.
+            </summary>
+        </member>
+        <member name="P:EPiServer.Events.ChangeNotification.IChangeProcessor.MaxRetryCount">
+            <summary>
+            Gets the maximum number of times that <see cref="M:ProcessItems"/> will be retried if
+            it returns false, after which the queue will be invalidated.
+            </summary>
+        </member>
+        <member name="P:EPiServer.Events.ChangeNotification.IChangeProcessor.RetryInterval">
+            <summary>
+            Gets the interval between retries if <see cref="M:ProcessItems"/> returns false and 
+            <see cref="P:MaxRetryCount"/> permits a retry.
+            </summary>
+        </member>
+        <member name="P:EPiServer.Events.ChangeNotification.IChangeProcessor.Listeners">
+            <summary>
+            Gets the change listeners associated with the processor.
+            </summary>
+            <remarks>
+            <para>
+            All change listener implementations must have a queued data type parameter that matches
+            the processor's queued data type parameter exactly.
+            </para>
+            <para>
+            This value is expected to be constant.  This property will only be enumerated once, and
+            the <see cref="T:IChangeNotificationManager"/> will not notice any subsequent changes
+            to value of this property.
+            </para>
+            </remarks>
+        </member>
+        <member name="T:EPiServer.Events.ChangeNotification.IChangeProcessor`1">
+            <summary>
+            Describes an asychronous processor for changes in specific types of data.
+            </summary>
+            <typeparam name="TQueuedData">The type of data queued by the processor.</typeparam>
+        </member>
+        <member name="M:EPiServer.Events.ChangeNotification.IChangeProcessor`1.ProcessItems(System.Collections.Generic.IEnumerable{`0},System.Threading.CancellationToken)">
+            <summary>
+            Processes a batch of queued data.
+            </summary>
+            <param name="items">The items to process.</param>
+            <param name="cancellationToken">
+            A cancellation token that the implementation may optionally monitor for cancellation 
+            requests.
+            </param>
+            <returns>
+            True if the processing is successful, or false if processing encounters an error that 
+            may be transient and should be retried later. If an exception is thrown, no retries 
+            will be attempted.
+            </returns>
+        </member>
+        <member name="T:EPiServer.Events.ChangeNotification.IChangeProcessorInfo">
+            <summary>
+            Represents information about the current status of a processor.
+            </summary>
+        </member>
+        <member name="M:EPiServer.Events.ChangeNotification.IChangeProcessorInfo.TryStartRecovery">
+            <summary>
+            Tries to start recovery of the processor, if it is invalid.  If the queue is valid or already recovering, does nothing.
+            </summary>
+        </member>
+        <member name="M:EPiServer.Events.ChangeNotification.IChangeProcessorInfo.SetInvalid">
+            <summary>
+            Invalidates the processor.
+            </summary>
+        </member>
+        <member name="P:EPiServer.Events.ChangeNotification.IChangeProcessorInfo.ProcessorId">
+            <summary>
+            Gets the unique id of the processor.
+            </summary>
+        </member>
+        <member name="P:EPiServer.Events.ChangeNotification.IChangeProcessorInfo.Name">
+            <summary>
+            Gets the display name of the processor.
+            </summary>
+        </member>
+        <member name="P:EPiServer.Events.ChangeNotification.IChangeProcessorInfo.Status">
+            <summary>
+            Gets the current status of the processor.
+            </summary>
+        </member>
+        <member name="P:EPiServer.Events.ChangeNotification.IChangeProcessorInfo.QueuedItemCount">
+            <summary>
+            Gets the number of items in the processor's queue.
+            </summary>
+        </member>
+        <member name="P:EPiServer.Events.ChangeNotification.IChangeProcessorInfo.LastConsistentUtc">
+            <summary>
+            Gets the most recent date and time that the processor state was valid and the queue
+            was empty, or null if that condition has not occurred.
+            </summary>
+            <remarks>
+            This value is reset to null when the queue is invalidated.
+            </remarks>
+        </member>
+        <member name="P:EPiServer.Events.ChangeNotification.IChangeProcessorInfo.RecoveryProcessLastActivityUtc">
+            <summary>
+            If a recovery process is being run by the event manager returning 
+            this object, and the process is reporting progress messages, gets 
+            the most recent date and time that the process reported activity; 
+            otherwise, returns null.
+            </summary>
+        </member>
+        <member name="P:EPiServer.Events.ChangeNotification.IChangeProcessorInfo.RecoveryProcessCompletionPercentage">
+            <summary>
+            If a recovery process is being run by the event manager returning 
+            this object, and the process is reporting progress messages with
+            percentages, gets the most recently reported completion percent; 
+            otherwise, returns null.
+            </summary>
+            <remarks>
+            100% is represented as 100.0, not 1.0.
+            </remarks>
+        </member>
+        <member name="P:EPiServer.Events.ChangeNotification.Implementation.ManagedChangeListener.ListenerIndex">
+            <summary>
+            The listener index is expected to uniquely identify each listener within a
+            <see cref="T:ChangeNotificationManager"/> so that a stable ordering can be assured on
+            collections of listeners.  If the listener indexes are not unique, the cache may not
+            properly detect duplicates sets, degrading performance.
+            </summary>
+        </member>
+        <member name="T:EPiServer.Events.ChangeNotification.Implementation.ManagedChangeProcessor">
+            <summary>
+            Wraps an <see cref="T:IEventProcessor"/> implementation and adds task management
+            functionality.   
+            </summary>
+        </member>
+        <member name="M:EPiServer.Events.ChangeNotification.Implementation.ManagedChangeProcessor.NotifyChange(System.Collections.Generic.IEnumerable{EPiServer.Events.ChangeNotification.Implementation.ManagedChangeListener},System.Object,System.Object)">
+            <summary>
+            Executes a single change notification against each listener in <paramref name="listeners"/>.  
+            <paramref name="listeners"/> is expected to be the correct set of listeners for the 
+            operation, and is not validated in this method.
+            </summary>
+            <param name="listeners">
+            The listeners in this processor accepting notification of the specified change.
+            </param>
+            <param name="before">The before value of the change.</param>
+            <param name="after">The after value of the change.</param>
+        </member>
+        <member name="M:EPiServer.Events.ChangeNotification.Implementation.ManagedChangeProcessor.NotifyChanges(System.Collections.Generic.IEnumerable{EPiServer.Events.ChangeNotification.Implementation.ManagedChangeListener},System.Collections.Generic.IEnumerable{EPiServer.Events.ChangeNotification.IBulkChangeItem})">
+            <summary>
+            Executes multiple change notifications against each listener in <paramref name="listeners"/>.
+            <paramref name="listeners"/> is expected to be the correct set of listeners for all
+            changes in the operation, and is not validated in this method.
+            </summary>
+            <param name="listeners">
+            The listeners in this processor accepting notification of the specified changes.
+            </param>
+            <param name="changes">The changes.</param>
+        </member>
+        <member name="M:EPiServer.Events.ChangeNotification.Implementation.ManagedChangeProcessor.TryStartRecovery">
+            <summary>
+            If the queue status is invalid, will start recovery; otherwise, does nothing.
+            </summary>
+        </member>
+        <member name="M:EPiServer.Events.ChangeNotification.Implementation.ManagedChangeProcessor.SetInvalid">
+            <summary>
+            Invalidates the queue.
+            </summary>
+        </member>
+        <member name="M:EPiServer.Events.ChangeNotification.Implementation.ManagedChangeProcessor.HeartBeat">
+            <summary>
+            Expects to be called regularly from the event manager. 
+            </summary>
+            <returns>
+            If the processor is paused, the time (in UTC) when it will no longer paused; otherwise,
+            null.
+            </returns>
+        </member>
+        <member name="M:EPiServer.Events.ChangeNotification.Implementation.ManagedChangeProcessor.Start">
+            <summary>
+            Starts the processor.
+            </summary>
+        </member>
+        <member name="M:EPiServer.Events.ChangeNotification.Implementation.ManagedChangeProcessor.Halt">
+            <summary>
+            Begins the shutdown process.
+            </summary>
+        </member>
+        <member name="M:EPiServer.Events.ChangeNotification.Implementation.ManagedChangeProcessor.WaitForPendingNotifies(System.TimeSpan)">
+            <summary>
+            Waits for any pending notifications to complete, up to the specifed timeout.
+            </summary>
+            <param name="timeout">
+            The maximum wait time. Values less than zero will be treated as zero.
+            </param>
+            <remarks>
+            <para>
+            The <see cref="N:System.Threading.Tasks"/> convention of -1 milliseconds representing
+            "wait indefinitely" is not observed by this call. -1 milliseconds will be treated as 
+            zero.
+            </para>
+            <para>
+            <see cref="M:Halt"/> must be called before calling this method.
+            </para>
+            <para>
+            If the timeout expires with pending notify changes calls still executing, the queue
+            will be set to invalid.
+            </para>
+            </remarks>
+        </member>
+        <member name="M:EPiServer.Events.ChangeNotification.Implementation.ManagedChangeProcessor.GetEventProcessorInfo">
+            <summary>
+            Creates an <see cref="T:EPiServer.Events.ChangeNotification.IChangeProcessorInfo"/> instance describing the current state of 
+            this processor.
+            </summary>
+            <returns>The created </returns>
+        </member>
+        <member name="M:EPiServer.Events.ChangeNotification.IRecoveryContext.SetProgress(System.Int32,System.Int32)">
+            <summary>
+            Updates the progress of a recovery operation.
+            </summary>
+            <param name="processedCount">A count representing the progress of the operation.</param>
+            <param name="totalCount">A count representing the value that the processed count will become when the operation is complete.</param>
+        </member>
+        <member name="M:EPiServer.Events.ChangeNotification.IRecoveryContext.SetActivity">
+            <summary>
+            Indicates activity of a recovery operation when the overall operation size is not known.
+            </summary>
+        </member>
+        <member name="P:EPiServer.Events.ChangeNotification.IRecoveryContext.CancellationToken">
+            <summary>
+            Gets the token that may be used to request cancellation of the recovery process.
+            </summary>
+        </member>
+        <member name="T:EPiServer.Events.Clients.RegistrationType">
+            <summary>
+            The permitted options when registering an event site in the <see cref="T:EPiServer.Events.Providers.IEventSiteRegistry"/>.
+            </summary>
+        </member>
+        <member name="F:EPiServer.Events.Clients.RegistrationType.Undefined">
+            <summary>
+            Noop option.
+            </summary>
+        </member>
+        <member name="F:EPiServer.Events.Clients.RegistrationType.EventSubscriber">
+            <summary>
+            Register a site to receive events from
+            </summary>
+        </member>
+        <member name="F:EPiServer.Events.Clients.RegistrationType.EventPublisher">
+            <summary>
+            Register a site to publish event from
+            </summary>
+        </member>
+        <member name="F:EPiServer.Events.Clients.RegistrationType.EventSubscriberAndPublisher">
+            <summary>
+            Register a site both as publisher and subscriber
+            </summary>
+        </member>
+        <member name="T:EPiServer.Events.Clients.EventRegistry">
+            <summary>
+            The EventService class is used to retrieve Event objects used to raise and receive events in EPiServer.
+            </summary>
+        </member>
+        <member name="T:EPiServer.Events.Clients.IEventRegistry">
+            <summary>
+            An <see cref="T:EPiServer.Events.Clients.IEventRegistry"/> represents a service that can be used to retrieve Event objects used to raise and receive events in EPiServer.
+            </summary>
+        </member>
+        <member name="M:EPiServer.Events.Clients.IEventRegistry.Get(System.Guid)">
+            <summary>
+            Retrieves or creates an Event instance with the provided event id.
+            </summary>
+            <param name="eventId">An event id of an Event object.</param>
+            <returns>An Event object for the eventId specified.</returns>
+        </member>
+        <member name="M:EPiServer.Events.Clients.IEventRegistry.List">
+            <summary>
+            Returns all of the <see cref="T:EPiServer.Events.Clients.Event"/> instances registered with the EventService.
+            </summary>
+            <returns>An enumerable of event objects</returns>
+        </member>
+        <member name="P:EPiServer.Events.Clients.IEventRegistry.Enabled">
+            <summary>
+            Indicates if the Event system is enabled at all.
+            </summary>
+        </member>
+        <member name="M:EPiServer.Events.Clients.EventRegistry.#ctor(EPiServer.Events.Providers.IEventBroker)">
+            <summary>
+            Initializes a new instance of the <see cref="T:EPiServer.Events.Clients.EventRegistry"/> class.
+            </summary>
+            <param name="eventBroker">The event broker that should be used by this service.</param>
+        </member>
+        <member name="M:EPiServer.Events.Clients.EventRegistry.Get(System.Guid)">
+            <summary>
+            Retrieves or creates an Event instance with the provided event id.
+            </summary>
+            <param name="eventId">An event id of an Event object</param>
+            <returns>The Event object for the eventId specified</returns>
+        </member>
+        <member name="M:EPiServer.Events.Clients.EventRegistry.List">
+            <summary>
+            Returns all of the <see cref="T:EPiServer.Events.Clients.Event"/> instances registered with the EventService.
+            </summary>
+            <returns>An enumerable of event objects</returns>
+        </member>
+        <member name="P:EPiServer.Events.Clients.EventRegistry.Enabled">
+            <summary>
+            Indicates if the Event system is enabled at all.
+            </summary>
+        </member>
+        <member name="T:EPiServer.Events.Clients.ServerState">
+            <summary>
+            Holds information about the state of a server
+            </summary>
+        </member>
+        <member name="M:EPiServer.Events.Clients.ServerState.#ctor(System.String,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:EPiServer.Events.Clients.ServerState"/> class with the current time set as the first and last contact.
+            </summary>
+            <param name="serverName">Name of the server.</param>
+            <param name="applicationName">Name of the application.</param>
+        </member>
+        <member name="M:EPiServer.Events.Clients.ServerState.#ctor(System.String,System.String,System.DateTime,System.DateTime,System.Boolean)">
+            <summary>
+            Initializes a new instance of the <see cref="T:EPiServer.Events.Clients.ServerState"/> class.
+            </summary>
+            <param name="serverName">Name of the server.</param>
+            <param name="applicationName">Name of the application.</param>
+            <param name="firstContact">The time of the first contact.</param>
+            <param name="lastContact">The time of the last contact.</param>
+            <param name="active">A value indicating if the server is currently active.</param>
+        </member>
+        <member name="M:EPiServer.Events.Clients.ServerState.Matches(System.String,System.String)">
+            <summary>
+            Checks if the current instance matches the specified server and application name.
+            </summary>
+            <param name="serverName">Name of the server to match against.</param>
+            <param name="applicationName">Name of the application to match against.</param>
+            <returns>True if the current instance matches the provided names; otherwise false.</returns>
+        </member>
+        <member name="M:EPiServer.Events.Clients.ServerState.Equals(EPiServer.Events.Clients.ServerState)">
+            <summary>
+            Indicates whether the current <see cref="T:EPiServer.Events.Clients.ServerState"/> instance is equal to another <see cref="T:EPiServer.Events.Clients.ServerState"/> instance.
+            </summary>
+            <param name="other">A <see cref="T:EPiServer.Events.Clients.ServerState"/> instance to compare with this instance.</param>
+            <returns>
+            true if the current object is equal to the <paramref name="other"/> parameter; otherwise, false.
+            </returns>
+        </member>
+        <member name="M:EPiServer.Events.Clients.ServerState.Equals(System.Object)">
+            <summary>
+            Determines whether the specified <see cref="T:System.Object"/> is equal to this instance.
+            </summary>
+            <param name="obj">The <see cref="T:System.Object"/> to compare with this instance.</param>
+            <returns>
+              <c>true</c> if the specified <see cref="T:System.Object"/> is equal to this instance; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:EPiServer.Events.Clients.ServerState.GetHashCode">
+            <summary>
+            Returns a hash code for this instance.
+            </summary>
+            <returns>
+            A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table. 
+            </returns>
+        </member>
+        <member name="M:EPiServer.Events.Clients.ServerState.ToString">
+            <summary>
+            Returns a <see cref="T:System.String"/> that represents this instance.
+            </summary>
+            <returns>
+            A <see cref="T:System.String"/> that represents this instance.
+            </returns>
+        </member>
+        <member name="F:EPiServer.Events.Clients.ServerState.ServerNameComparer">
+            <summary>
+            Gets an equality comparer instance that only compare the server name of <see cref="T:EPiServer.Events.Clients.ServerState"/> objects.
+            </summary>
+        </member>
+        <member name="F:EPiServer.Events.Clients.ServerState.ServerAndApplicationNameComparer">
+            <summary>
+            Gets an equality comparer instance that only compare the server name of <see cref="T:EPiServer.Events.Clients.ServerState"/> objects.
+            </summary>
+        </member>
+        <member name="P:EPiServer.Events.Clients.ServerState.ServerName">
+            <summary>
+            Gets the name of the server that this state represents.
+            </summary>
+        </member>
+        <member name="P:EPiServer.Events.Clients.ServerState.ApplicationName">
+            <summary>
+            Gets the name of the IIS application that this state represents.
+            </summary>
+        </member>
+        <member name="P:EPiServer.Events.Clients.ServerState.FirstContact">
+            <summary>
+            Gets the time of the first contact between this server and the current one.
+            </summary>
+        </member>
+        <member name="P:EPiServer.Events.Clients.ServerState.LastContact">
+            <summary>
+            Gets the time of the last contact between this server and the current one.
+            </summary>
+        </member>
+        <member name="P:EPiServer.Events.Clients.ServerState.Active">
+            <summary>
+            Gets a value indicating whether this server is active.
+            </summary>
+        </member>
+        <member name="T:EPiServer.Events.Clients.ServerStateService">
+            <summary>
+            Service that sends and collect state information to and from the other servers using the Event system.
+            </summary>
+        </member>
+        <member name="M:EPiServer.Events.Clients.ServerStateService.#ctor(EPiServer.Events.Clients.IEventRegistry,EPiServer.Events.Providers.IEventBroker,EPiServer.Web.Hosting.IHostingEnvironment)">
+            <summary>
+            Initializes a new instance of the <see cref="T:EPiServer.Events.Clients.ServerStateService"/> class.
+            </summary>
+            <param name="eventService">The <see cref="T:EPiServer.Events.Clients.IEventRegistry"/> instance that should be used by this instance.</param>
+            <param name="eventBroker">The <see cref="T:EPiServer.Events.Providers.IEventBroker"/> instance that should be used by this instance.</param>
+            <param name="hostingEnvironment">The current hosting environment used by this instance.</param>
+        </member>
+        <member name="M:EPiServer.Events.Clients.ServerStateService.#ctor(EPiServer.Events.Clients.IEventRegistry,EPiServer.Events.Providers.IEventBroker,EPiServer.Web.Hosting.IHostingEnvironment,EPiServer.ServiceLocation.ServiceAccessor{EPiServer.Framework.Timers.ITimer})">
+            <summary>
+            Initializes a new instance of the <see cref="T:EPiServer.Events.Clients.ServerStateService"/> class.
+            </summary>
+            <param name="eventService">The <see cref="T:EPiServer.Events.Clients.IEventRegistry"/> instance that should be used by this instance.</param>
+            <param name="eventBroker">The <see cref="T:EPiServer.Events.Providers.IEventBroker"/> instance that should be used by this instance.</param>
+            <param name="hostingEnvironment">The current hosting environment used by this instance.</param>
+            <param name="timerFactory">A factory that creates the timer that should be used by the service.</param>
+            <exception cref="T:System.ArgumentNullException">
+            eventService
+            or
+            eventBroker
+            </exception>
+        </member>
+        <member name="M:EPiServer.Events.Clients.ServerStateService.Initialize">
+            <summary>
+            Initializes this <see cref="T:EPiServer.Events.Clients.ServerStateService"/> instance and broadcasts a startup state message.
+            </summary>
+        </member>
+        <member name="M:EPiServer.Events.Clients.ServerStateService.Uninitialize">
+            <summary>
+            Uninitializes this <see cref="T:EPiServer.Events.Clients.ServerStateService"/> instance and broadcasts a shutdown state message.
+            </summary>
+        </member>
+        <member name="M:EPiServer.Events.Clients.ServerStateService.RequestState">
+            <summary>
+            Sends a state request to all currently participating servers.
+            </summary>
+        </member>
+        <member name="M:EPiServer.Events.Clients.ServerStateService.CurrentServerState">
+            <summary>
+            Gets an enumerable of the current server state as known by this <see cref="T:EPiServer.Events.Clients.ServerStateService"/> instance.
+            </summary>
+            <returns>An enumerable of <see cref="T:EPiServer.Events.Clients.ServerState"/> instances for all server that has sent events to the current instance.</returns>
+        </member>
+        <member name="E:EPiServer.Events.Clients.ServerStateService.StateMessageReceived">
+            <summary>
+            Occurs when a state message is received.
+            </summary>
+        </member>
+        <member name="P:EPiServer.Events.Clients.ServerStateService.LocalState">
+            <summary>
+            Represents the state of the local server
+            </summary>
+        </member>
+        <member name="P:EPiServer.Events.Clients.ServerStateService.ServerName">
+            <summary>
+            Gets or sets the name of the server as broadcasted to other participants.
+            </summary>
+        </member>
+        <member name="P:EPiServer.Events.Clients.ServerStateService.ApplicationName">
+            <summary>
+            Gets or sets the name of the server as broadcasted to other participants.
+            </summary>
+        </member>
+        <member name="T:EPiServer.Events.Clients.StateMessage">
+            <summary>
+            Message that is sent by the <see cref="T:EPiServer.Events.Clients.ServerStateService"/> to propagate status information.
+            </summary>
+        </member>
+        <member name="M:EPiServer.Events.Clients.StateMessage.#ctor">
+            <summary>
+            Serialization constructor
+            </summary>
+        </member>
+        <member name="M:EPiServer.Events.Clients.StateMessage.#ctor(System.String,System.String,EPiServer.Events.Clients.StateMessageType)">
+            <summary>
+            Initializes a new instance of the <see cref="T:EPiServer.Events.Clients.StateMessage"/> class.
+            </summary>
+            <param name="serverName">Name of the server.</param>
+            <param name="applicationName">Name of the application.</param>
+            <param name="type">The message type.</param>
+        </member>
+        <member name="M:EPiServer.Events.Clients.StateMessage.#ctor(System.String,System.String,EPiServer.Events.Clients.StateMessageType,System.DateTime)">
+            <summary>
+            Initializes a new instance of the <see cref="T:EPiServer.Events.Clients.StateMessage"/> class.
+            </summary>
+            <param name="serverName">Name of the server.</param>
+            <param name="applicationName">Name of the application.</param>
+            <param name="type">The message type.</param>
+            <param name="sent">The time when the message was sent.</param>
+        </member>
+        <member name="M:EPiServer.Events.Clients.StateMessage.ToString">
+            <summary>
+            Returns a <see cref="T:System.String"/> that represents this instance.
+            </summary>
+            <returns>
+            A <see cref="T:System.String"/> that represents this instance.
+            </returns>
+        </member>
+        <member name="P:EPiServer.Events.Clients.StateMessage.ServerName">
+            <summary>
+            Gets the name of the server that this message origins from.
+            </summary>
+        </member>
+        <member name="P:EPiServer.Events.Clients.StateMessage.ApplicationName">
+            <summary>
+            Gets the name of the application (AppDomain) that this message origins from.
+            </summary>
+        </member>
+        <member name="P:EPiServer.Events.Clients.StateMessage.Sent">
+            <summary>
+            Gets the date when this message was sent.
+            </summary>
+        </member>
+        <member name="P:EPiServer.Events.Clients.StateMessage.Type">
+            <summary>
+            Gets the type of message that was sent.
+            </summary>
+        </member>
+        <member name="T:EPiServer.Events.Clients.StateMessageType">
+            <summary>
+            Represents the different types of State messages that can be sent.
+            </summary>
+        </member>
+        <member name="T:EPiServer.Events.LimitedConcurrencyLevelTaskScheduler">
+            <summary> 
+            Provides a task scheduler that ensures a maximum concurrency level while 
+            running on top of the ThreadPool. 
+            </summary> 
+            <remarks>
+            Code sample from "Samples for Parallel Programming with the .NET Framework" by Microsoft at http://code.msdn.microsoft.com/Samples-for-Parallel-b4b76364
+            published under the MS-LPL license (MICROSOFT LIMITED PUBLIC LICENSE version 1.1)
+            </remarks>
+        </member>
+        <member name="F:EPiServer.Events.LimitedConcurrencyLevelTaskScheduler._currentThreadIsProcessingItems">
+            <summary>Whether the current thread is processing work items.</summary> 
+        </member>
+        <member name="F:EPiServer.Events.LimitedConcurrencyLevelTaskScheduler._tasks">
+            <summary>The list of tasks to be executed.</summary> 
+        </member>
+        <member name="F:EPiServer.Events.LimitedConcurrencyLevelTaskScheduler._maxDegreeOfParallelism">
+            <summary>The maximum concurrency level allowed by this scheduler.</summary> 
+        </member>
+        <member name="F:EPiServer.Events.LimitedConcurrencyLevelTaskScheduler._delegatesQueuedOrRunning">
+            <summary>Whether the scheduler is currently processing work items.</summary> 
+        </member>
+        <member name="M:EPiServer.Events.LimitedConcurrencyLevelTaskScheduler.#ctor(System.Int32)">
+            <summary> 
+            Initializes an instance of the LimitedConcurrencyLevelTaskScheduler class with the 
+            specified degree of parallelism. 
+            </summary> 
+            <param name="maxDegreeOfParallelism">The maximum degree of parallelism provided by this scheduler.</param> 
+        </member>
+        <member name="M:EPiServer.Events.LimitedConcurrencyLevelTaskScheduler.QueueTask(System.Threading.Tasks.Task)">
+            <summary>Queues a task to the scheduler.</summary> 
+            <param name="task">The task to be queued.</param> 
+        </member>
+        <member name="M:EPiServer.Events.LimitedConcurrencyLevelTaskScheduler.NotifyThreadPoolOfPendingWork">
+            <summary> 
+            Informs the ThreadPool that there's work to be executed for this scheduler. 
+            </summary> 
+        </member>
+        <member name="M:EPiServer.Events.LimitedConcurrencyLevelTaskScheduler.TryExecuteTaskInline(System.Threading.Tasks.Task,System.Boolean)">
+            <summary>Attempts to execute the specified task on the current thread.</summary> 
+            <param name="task">The task to be executed.</param> 
+            <param name="taskWasPreviouslyQueued"></param> 
+            <returns>Whether the task could be executed on the current thread.</returns> 
+        </member>
+        <member name="M:EPiServer.Events.LimitedConcurrencyLevelTaskScheduler.TryDequeue(System.Threading.Tasks.Task)">
+            <summary>Attempts to remove a previously scheduled task from the scheduler.</summary> 
+            <param name="task">The task to be removed.</param> 
+            <returns>Whether the task could be found and removed.</returns> 
+        </member>
+        <member name="M:EPiServer.Events.LimitedConcurrencyLevelTaskScheduler.GetScheduledTasks">
+            <summary>Gets an enumerable of the tasks currently scheduled on this scheduler.</summary> 
+            <returns>An enumerable of the tasks currently scheduled.</returns> 
+        </member>
+        <member name="P:EPiServer.Events.LimitedConcurrencyLevelTaskScheduler.MaximumConcurrencyLevel">
+            <summary>Gets the maximum concurrency level supported by this scheduler.</summary> 
+        </member>
+        <member name="M:EPiServer.Events.EventsInitialization.InitializeEvents(System.Boolean)">
+            <summary>
+            Ensures that the EPiServer.RemoteEvents system is initialized (even when there are no client/service-endpoints registered in web.config)
+            </summary>
+            <param name="forcePublisher">When true, ensures that the site is registered as Publisher even if there are no client-endpoints registered in web.config</param>
+        </member>
+        <member name="T:EPiServer.Events.EventsServiceKnownTypeAttribute">
+            <summary>
+            Attribute to indicate that this type should be treated as a known type by the EPiServer Events service
+            </summary>
+        </member>
+        <member name="T:EPiServer.Events.EventMessage">
+            <summary>
+            Holds information for an event message sent between sites.
+            </summary>
+        </member>
+        <member name="M:EPiServer.Events.EventMessage.ToString">
+            <summary>
+            Returns a <see cref="T:System.String"/> that represents this instance.
+            </summary>
+            <returns>
+            A <see cref="T:System.String"/> that represents this instance.
+            </returns>
+        </member>
+        <member name="M:EPiServer.Events.EventMessage.ToString(System.String)">
+            <summary>
+            Returns a <see cref="T:System.String"/> that represents this instance.
+            </summary>
+            <param name="format">The format to use (use "V" to include the verification data).</param>
+            <returns>
+            A <see cref="T:System.String"/> that represents this instance.
+            </returns>
+        </member>
+        <member name="P:EPiServer.Events.EventMessage.RaiserId">
+            <summary>
+            Gets or sets the GUID that is unique per raising instance/site.
+            </summary>
+        </member>
+        <member name="P:EPiServer.Events.EventMessage.SiteId">
+            <summary>
+            Gets or sets the id that sites share when they use the same database.
+            </summary>
+        </member>
+        <member name="P:EPiServer.Events.EventMessage.SequenceNumber">
+            <summary>
+            Gets or sets the sequence number of the current event message. This is used to track lost event messages.
+            </summary>
+        </member>
+        <member name="P:EPiServer.Events.EventMessage.ServerName">
+            <summary>
+            Gets or sets the name of the server where the current message was sent from.
+            </summary>
+        </member>
+        <member name="P:EPiServer.Events.EventMessage.ApplicationName">
+            <summary>
+            Gets or sets the friendly name of the application (AppDomain) where the current message was sent from.
+            </summary>
+        </member>
+        <member name="P:EPiServer.Events.EventMessage.Sent">
+            <summary>
+            Gets or sets the date and time when this message was sent from the remote server.
+            </summary>
+        </member>
+        <member name="P:EPiServer.Events.EventMessage.VerificationData">
+            <summary>
+            Signing of the event to make sure we can trust it
+            </summary>
+        </member>
+        <member name="P:EPiServer.Events.EventMessage.EventId">
+            <summary>
+            Gets or sets the unique id associated with this specific event.
+            </summary>
+        </member>
+        <member name="P:EPiServer.Events.EventMessage.Parameter">
+            <summary>
+            Gets or sets a parameter object that should be passed with the event.
+            </summary>
+        </member>
+        <member name="T:EPiServer.Events.EventMessageEventArgs">
+            <summary>
+            Event argument used when a message is recieved from another site in a load balanced scenario.
+            </summary>
+        </member>
+        <member name="M:EPiServer.Events.EventMessageEventArgs.#ctor(EPiServer.Events.EventMessage)">
+            <summary>
+            Initializes a new instance of the <see cref="T:EPiServer.Events.EventMessageEventArgs"/> class.
+            </summary>
+            <param name="message">The message.</param>
+        </member>
+        <member name="P:EPiServer.Events.EventMessageEventArgs.Message">
+            <summary>
+            Gets the message that was recieved.
+            </summary>
+            <value>
+            The message.
+            </value>
+        </member>
+        <member name="T:EPiServer.Events.OrderedTaskScheduler">
+            <summary> 
+            Provides a task scheduler that ensures only one task is executing at a time, and that tasks 
+            execute in the order that they were queued. 
+            </summary> 
+            <remarks>
+            Code sample from "Samples for Parallel Programming with the .NET Framework" by Microsoft at http://code.msdn.microsoft.com/Samples-for-Parallel-b4b76364
+            published under the MS-LPL license (MICROSOFT LIMITED PUBLIC LICENSE version 1.1)
+            </remarks>
+        </member>
+        <member name="M:EPiServer.Events.OrderedTaskScheduler.#ctor">
+            <summary>
+            Initializes an instance of the OrderedTaskScheduler class.
+            </summary>
+        </member>
+        <member name="T:EPiServer.Events.Providers.EventProvider">
+            <summary>
+            Base class for providers that is used for communication between sites.
+            </summary>
+        </member>
+        <member name="M:EPiServer.Events.Providers.EventProvider.SendMessage(EPiServer.Events.EventMessage)">
+            <summary>
+            Sends the provided message to other related sites.
+            </summary>
+            <param name="message">The message to send.</param>
+        </member>
+        <member name="M:EPiServer.Events.Providers.EventProvider.InitializeAsync">
+            <summary>
+            Override this method if the provider has some time consuming initialization that can be done in parallel with other initalization modules.
+            </summary>
+            <remarks>
+            This method will be called from <see cref="M:EPiServer.Events.EventsInitialization.Initialize(EPiServer.Framework.Initialization.InitializationEngine)"/> and then in 
+            <see cref="E:EPiServer.Framework.Initialization.InitializationEngine.InitComplete"/> it will wait for the ongoing task to complete.
+            </remarks>
+            <returns></returns>
+        </member>
+        <member name="M:EPiServer.Events.Providers.EventProvider.Uninitialize">
+            <summary>
+            Resets the provider into an uninitialized state. Called during the uninitailization phase of the <see cref="T:EPiServer.Framework.Initialization.InitializationEngine"/>.
+            </summary>
+        </member>
+        <member name="M:EPiServer.Events.Providers.EventProvider.OnMessageReceived(EPiServer.Events.EventMessageEventArgs)">
+            <summary>
+            Raises the <see cref="E:MessageReceived"/> event.
+            </summary>
+            <param name="args">The <see cref="T:EPiServer.Events.EventMessageEventArgs"/> instance containing the event data.</param>
+        </member>
+        <member name="E:EPiServer.Events.Providers.EventProvider.MessageReceived">
+            <summary>
+            Occurs when a remote message has been received.
+            </summary>
+        </member>
+        <member name="P:EPiServer.Events.Providers.EventProvider.ValidateMessageIntegrity">
+            <summary>
+            Gets a value indicating if messages received from the provider should be checked for their integrity.
+            </summary>
+            <value><c>true</c> if message integrity should be validate; otherwise, <c>false</c>.</value>
+        </member>
+        <member name="T:EPiServer.Events.Providers.EventProviderService">
+            <summary>
+            Repository that holds all configured <see cref="T:EPiServer.Events.Providers.EventProvider"/> instances.
+            </summary>
+        </member>
+        <member name="T:EPiServer.Events.Providers.IEventBroker">
+            <summary>
+            Describes an object that is responsible for managing the sending and receiving of events remotely.
+            </summary>
+        </member>
+        <member name="M:EPiServer.Events.Providers.IEventBroker.RaiseEventAsync(System.Guid,System.Object)">
+            <summary>
+            Raises an event remotely in an asyncrounous manner.
+            </summary>
+            <param name="eventId">The event id of the event to raise.</param>
+            <param name="parameter">The event parameter to send with the event.</param>
+            <returns>A <see cref="T:System.Threading.Tasks.Task"/> representing the work required to raise the event.</returns>
+        </member>
+        <member name="E:EPiServer.Events.Providers.IEventBroker.EventReceived">
+            <summary>
+            Occurs when a remote event has been received and verified.
+            </summary>
+        </member>
+        <member name="E:EPiServer.Events.Providers.IEventBroker.EventMissed">
+            <summary>
+            Occurs when it is discovered that a remote event was missed.
+            </summary>
+        </member>
+        <member name="P:EPiServer.Events.Providers.IEventBroker.Enabled">
+            <summary>
+            Gets or sets a value indicating whether the <see cref="T:EPiServer.Events.Providers.IEventBroker"/> is enabled or not.
+            </summary>
+            <value>
+            <c>true</c> if the <see cref="T:EPiServer.Events.Providers.IEventBroker"/> is enabled; otherwise <c>false</c>.
+            </value>
+        </member>
+        <member name="M:EPiServer.Events.Providers.EventProviderService.#ctor(EPiServer.Events.Providers.EventProvider,System.Collections.Generic.IEnumerable{EPiServer.Events.Providers.EventProvider},EPiServer.Events.Providers.IEventMessageFactory,EPiServer.Events.Providers.IEventMessageValidator,System.Threading.Tasks.TaskScheduler)">
+            <summary>
+            Initialize a new instance of <see cref="T:EPiServer.Events.Providers.EventProviderService"/>
+            </summary>
+            <param name="defaultProvider">The default provider</param>
+            <param name="providers">The list of supported providers</param>
+            <param name="messageFactory">The factory used to create message instances to send.</param>
+            <param name="messageValidator">The validator that evaluates incoming messages.</param>
+            <param name="messageSendScheduler">The task scheduler used to send messages.</param>
+        </member>
+        <member name="M:EPiServer.Events.Providers.EventProviderService.Stop(System.Boolean)">
+            <summary>
+            Requests a registered object to unregister.
+            </summary>
+            <param name="immediate">true to indicate the registered object should unregister from the hosting environment before returning; otherwise, false.</param>
+            <exception cref="T:System.NotImplementedException"></exception>
+        </member>
+        <member name="M:EPiServer.Events.Providers.EventProviderService.Initialize">
+            <summary>
+            Initializes this instance.
+            </summary>
+        </member>
+        <member name="M:EPiServer.Events.Providers.EventProviderService.Uninitialize">
+            <summary>
+            Detaches all event handlers to provider.
+            </summary>
+        </member>
+        <member name="M:EPiServer.Events.Providers.EventProviderService.GetProvider(System.String)">
+            <summary>
+            Get the event provider registered with name
+            </summary>
+            <param name="providerName">The name.</param>
+            <returns>
+            A event provider
+            </returns>
+            <exception cref="T:System.ArgumentException">name</exception>
+            <exception cref="T:System.ArgumentException">Throw if no matching provider was found</exception>
+        </member>
+        <member name="M:EPiServer.Events.Providers.EventProviderService.InitializeProvidersAsync">
+            <summary>
+            Starts the optional asyncronous initialization of all registered providers.
+            </summary>
+            <returns>An array of Task objects that can be used to syncronize the execution again.</returns>
+        </member>
+        <member name="M:EPiServer.Events.Providers.EventProviderService.RaiseEventAsync(System.Guid,System.Object)">
+            <inheritdoc />
+        </member>
+        <member name="M:EPiServer.Events.Providers.EventProviderService.OnEventReceived(System.Object,EPiServer.Events.Providers.EventReceivedEventArgs)">
+            <summary>
+            Called when any <see cref="T:EPiServer.Events.Providers.EventProvider"/> has recieved a message and raises the <see cref="E:EPiServer.Events.Providers.EventProviderService.EventReceived"/> event.
+            </summary>
+            <param name="sender">The provider that received the event message.</param>
+            <param name="e">The <see cref="T:EPiServer.Events.Providers.EventReceivedEventArgs"/> instance containing the event data.</param>
+        </member>
+        <member name="M:EPiServer.Events.Providers.EventProviderService.OnEventMissed(EPiServer.Events.Providers.EventMissedEventArgs)">
+            <summary>
+            Called when the <see cref="T:EPiServer.Events.Providers.EventProviderService"/> has identified a message as missing and raises the <see cref="E:EPiServer.Events.Providers.EventProviderService.EventMissed"/> event.
+            </summary>
+            <param name="e">The <see cref="T:EPiServer.Events.Providers.EventMissedEventArgs"/> instance containing the event data.</param>
+        </member>
+        <member name="P:EPiServer.Events.Providers.EventProviderService.Instance">
+            <summary>
+            The singleton instance of <see cref="T:EPiServer.Events.Providers.EventProviderService"/> (redirects to ServiceLocator.Current)
+            </summary>
+        </member>
+        <member name="E:EPiServer.Events.Providers.EventProviderService.EventReceived">
+            <summary>
+            Occurs when a remote event has been received and verified.
+            </summary>
+        </member>
+        <member name="E:EPiServer.Events.Providers.EventProviderService.EventMissed">
+            <summary>
+            Occurs when it is discovered that a remote event was missed.
+            </summary>
+        </member>
+        <member name="P:EPiServer.Events.Providers.EventProviderService.Enabled">
+            <summary>
+            Gets or sets a value indicating whether this instance is enabled or not.
+            If no providers are configured this will always return false.
+            </summary>
+            <value><c>true</c> if this instace is enabled otherwise, <c>false</c>.</value>
+        </member>
+        <member name="P:EPiServer.Events.Providers.EventProviderService.IsActive">
+            <summary>
+            Gets a value indicating if the Service will be able to send or recieve any events.
+            </summary>
+        </member>
+        <member name="P:EPiServer.Events.Providers.EventProviderService.DefaultProvider">
+            <summary>
+            Gets the default provider.
+            </summary>
+            <value>
+            The default provider.
+            </value>
+        </member>
+        <member name="P:EPiServer.Events.Providers.EventProviderService.Providers">
+            <summary>
+            Gets all registered providers.
+            </summary>
+            <value>
+            The providers.
+            </value>
+        </member>
+        <member name="T:EPiServer.Events.Providers.EventProviderServiceFactory">
+            <summary>
+            Factory class for creating an <see cref="T:EPiServer.Events.Providers.EventProviderService"/> instance from configuration.
+            </summary>
+        </member>
+        <member name="M:EPiServer.Events.Providers.EventProviderServiceFactory.CreateService(EPiServer.Framework.Configuration.EventElement,EPiServer.Framework.Initialization.HostType)">
+            <summary>
+            Creates the an <see cref="T:EPiServer.Events.Providers.EventProviderService"/> instance and it's <see cref="T:EPiServer.Events.Providers.EventProvider"/> instances
+            as described by the <paramref name="eventConfiguration"/> argument.
+            </summary>
+            <param name="eventConfiguration">The event configuration containing event provider configuration.</param>
+            <param name="hostType">Type of the host.</param>
+            <returns></returns>
+            <exception cref="T:System.Configuration.ConfigurationErrorsException"></exception>
+        </member>
+        <member name="T:EPiServer.Events.Providers.NullEventProvider">
+            <summary>
+            Noop implememtation of EventProvider, used when no provider is configured and no WCF endpoints are setup.
+            </summary>
+        </member>
+        <member name="M:EPiServer.Events.Providers.NullEventProvider.SendMessage(EPiServer.Events.EventMessage)">
+            <inheritdoc />
+        </member>
+        <member name="T:EPiServer.Events.Providers.WcfEventProvider">
+            <summary>
+            EventProvider implementation for sending/recieving events through WCF.
+            </summary>
+        </member>
+        <member name="M:EPiServer.Events.Providers.WcfEventProvider.SendMessage(EPiServer.Events.EventMessage)">
+            <inheritdoc />
+        </member>
+        <member name="M:EPiServer.Events.Providers.WcfEventProvider.Initialize(System.String,System.Collections.Specialized.NameValueCollection)">
+            <inheritdoc />
+        </member>
+        <member name="M:EPiServer.Events.Providers.WcfEventProvider.InitializeAsync">
+            <inheritdoc />
+        </member>
+        <member name="M:EPiServer.Events.Providers.WcfEventProvider.Uninitialize">
+            <inheritdoc />
+        </member>
+        <member name="M:EPiServer.Events.Providers.WcfEventProvider.ReceiveMessage(EPiServer.Events.EventMessage)">
+            <summary>
+            Receives the message from a remote source.
+            </summary>
+            <param name="message">The message.</param>
+        </member>
+        <member name="T:EPiServer.Events.RemoteCacheSynchronization">
+            <summary>
+            Default implementation of the synchronized object cache.
+            </summary>
+            <remarks>
+            Will wrap an existing IObjectInstanceCache and provide synchronization across multiple computers, using the 
+            remote event system.
+            </remarks>
+        </member>
+        <member name="F:EPiServer.Events.RemoteCacheSynchronization.LocalCacheManagerRaiserId">
+            <summary>
+            The ID of the local cache manager. 
+            </summary>
+            <remarks>
+            Used by the remote event system to identify who originally created an event and determine appropriate action.
+            </remarks>
+        </member>
+        <member name="F:EPiServer.Events.RemoteCacheSynchronization.RemoveFromCacheEventId">
+            <summary>
+            The ID used to identify cache removals requested by the cache manager.
+            </summary>
+        </member>
+        <member name="M:EPiServer.Events.RemoteCacheSynchronization.#ctor(EPiServer.Framework.Cache.IObjectInstanceCache)">
+            <summary>
+            Initializes a new instance of the <see cref="T:EPiServer.Events.RemoteCacheSynchronization"/> class.
+            </summary>
+            <param name="localCache">The local cache instance to extend with remote synchronization support.</param>
+        </member>
+        <member name="M:EPiServer.Events.RemoteCacheSynchronization.#ctor(EPiServer.Framework.Cache.IObjectInstanceCache,EPiServer.Events.Clients.IEventRegistry)">
+            <summary>
+            Initializes a new instance of the <see cref="T:EPiServer.Events.RemoteCacheSynchronization"/> class.
+            </summary>
+            <param name="localCache">The local cache instance to extend with remote synchronization support.</param>
+            <param name="eventService">The event service used by this instance to retrieve events.</param>
+        </member>
+        <member name="M:EPiServer.Events.RemoteCacheSynchronization.RemoveLocal(System.String)">
+            <summary>
+            Removes the object instance from the local cache.
+            </summary>
+            <param name="key">The key of the cached object.</param>
+        </member>
+        <member name="M:EPiServer.Events.RemoteCacheSynchronization.RemoveRemote(System.String)">
+            <summary>
+            Removes the object instance from remote cache locations.
+            </summary>
+            <param name="key">The key of the cached object.</param>
+        </member>
+        <member name="M:EPiServer.Events.RemoteCacheSynchronization.Insert(System.String,System.Object,EPiServer.Framework.Cache.CacheEvictionPolicy)">
+            <summary>
+            Inserts the value into the cache with the specified key.
+            </summary>
+            <param name="key">The key.</param>
+            <param name="value">The value to cache.</param>
+            <param name="evictionPolicy">The cache eviction policy.</param>
+            <remarks>
+            The evicitionPolicy can be null. In that case we have no specific policy as to when or why the object
+            should be removed from the cache. I e it may remain in the cache indefinitely.
+            </remarks>
+        </member>
+        <member name="M:EPiServer.Events.RemoteCacheSynchronization.Get(System.String)">
+            <summary>
+            Gets the specified object.
+            </summary>
+            <param name="key">The key.</param>
+            <returns>
+            The object associated with the key, if it exists. Otherwise returns null.
+            </returns>
+        </member>
+        <member name="M:EPiServer.Events.RemoteCacheSynchronization.Remove(System.String)">
+            <summary>
+            Removes the specified object.
+            </summary>
+            <param name="key">The key.</param>
+        </member>
+        <member name="M:EPiServer.Events.RemoteCacheSynchronization.Clear">
+            <summary>
+            Removes all entries from the cache.
+            </summary>
+        </member>
+        <member name="M:EPiServer.Events.RemoteCacheSynchronization.ReadThrough``1(System.String,System.Func{``0},System.Func{EPiServer.Framework.Cache.CacheEvictionPolicy})">
+            <summary>
+            Read-through cache handling.
+            </summary>
+            <typeparam name="T">Type of the value to read.</typeparam>
+            <param name="key">The key.</param>
+            <param name="readValue">The function to invoke for retrieving the value if it does not exist in the cache.</param>
+            <param name="evictionPolicy">The function to invoke for determining the cache eviction policy in case a new value was retrieved. It can be null in which case a default policy is used.</param>
+            <returns>
+            The object associated with the key, if it exists or is read thru the readValue fuction. Otherwise returns null.
+            </returns>
+        </member>
+        <member name="P:EPiServer.Events.RemoteCacheSynchronization.SynchronizationFailedStrategy">
+            <summary>
+            Set the strategy for handling missed synchronization information.
+            </summary>
+            <remarks>
+            By default this is set to None, meaning that if we detect a failure in communication with a remote
+            computer, we will simply ignore that error. The potential problem is that we may have stale data in
+            the cache. In most cases stale data is better than aggressively clearing cached data, since clearing
+            the cache can seriously impact a running site.
+            </remarks>
+        </member>
+        <member name="P:EPiServer.Events.RemoteCacheSynchronization.ObjectInstanceCache">
+            <summary>
+            Gets the object instance cache used by the synchronized cache implementation.
+            </summary>
+            <value>
+            The object instance cache.
+            </value>
+        </member>
+        <member name="T:EPiServer.Events.Providers.ProxyEventBroker">
+            <summary>
+            Class to handle <see cref="T:EPiServer.Events.Providers.IEventBroker"/> access in <see cref="T:EPiServer.Events.Clients.Event"/> instances that was created before the Event Initialization was completed.
+            </summary>
+        </member>
+        <member name="T:EPiServer.Events.Providers.IEventMessageFactory">
+            <summary>
+            Describes the functionality used to create an <see cref="T:EPiServer.Events.EventMessage"/>.
+            </summary>
+        </member>
+        <member name="M:EPiServer.Events.Providers.IEventMessageFactory.Create(System.Guid,System.Object,System.Boolean)">
+            <summary>
+            Creates an event message with the given event identifier and parameter.
+            </summary>
+            <param name="eventId">The event unique identifier.</param>
+            <param name="parameter">The message parameter.</param>
+            <param name="addChecksum">if set to <c>true</c> a checksum is calculated and added to the message.</param>
+            <returns>A new <see cref="T:EPiServer.Events.EventMessage"/> instance.</returns>
+        </member>
+        <member name="M:EPiServer.Events.Providers.EventMessageFactory.Create(System.Guid,System.Object,System.Boolean)">
+            <inheritdoc />
+        </member>
+        <member name="M:EPiServer.Events.Providers.IEventMessageValidator.Validate(EPiServer.Events.EventMessage,System.Boolean)">
+            <summary>
+            Validates a received message and verifies that an event should be raised for it.
+            </summary>
+            <param name="message">The message that should be validated.</param>
+            <param name="validateMessageIntegrity">if set to <c>true</c> the message integrity should be validated.</param>
+            <returns><c>true</c> if an event should be raised for the message; otherwise <c>false</c>.</returns>
+            <remarks>
+            Calling this method will also trigger a message sequence validation.
+            </remarks>
+        </member>
+        <member name="E:EPiServer.Events.Providers.IEventMessageValidator.MessageMissed">
+            <summary>
+            Occurs if the <see cref="T:EPiServer.Events.Providers.IEventMessageValidator"/> discovers that an event message has been not been received.
+            </summary>
+        </member>
+        <member name="M:EPiServer.Events.Providers.EventMessageValidator.Validate(EPiServer.Events.EventMessage,System.Boolean)">
+            <inheritdoc />
+        </member>
+        <member name="M:EPiServer.Events.Providers.EventMessageValidator.OnEventMissed(EPiServer.Events.Providers.EventMissedEventArgs)">
+            <summary>
+            Raises the <see cref="E:EventMissed"/> event.
+            </summary>
+            <param name="args">The <see cref="T:EPiServer.Events.Providers.EventMissedEventArgs"/> instance containing the event data.</param>
+        </member>
+        <member name="P:EPiServer.Events.Providers.EventMessageValidator.EventTimeout">
+            <summary>
+            Gets or sets a value indicating how long this <see cref="T:EPiServer.Events.Providers.EventMessageValidator"/> should wait before considering an event as missing.
+            </summary>
+        </member>
+        <member name="E:EPiServer.Events.Providers.EventMessageValidator.MessageMissed">
+            <inheritdoc />
+        </member>
+        <member name="T:EPiServer.Events.Providers.EventReceivedEventArgs">
+            <summary>
+            Holds event data about remote event that was received. 
+            </summary>
+        </member>
+        <member name="M:EPiServer.Events.Providers.EventReceivedEventArgs.#ctor(System.Guid,System.Guid,System.String,System.String,System.Nullable{System.DateTime},System.Object)">
+            <summary>
+            Initializes a new instance of the <see cref="T:EPiServer.Events.EventNotificationEventArgs"/> class.
+            </summary>
+            <param name="raiserId">The identity of the part that raised this event.</param>
+            <param name="eventId">The event identity.</param>
+            <param name="serverName">Name of the server where this event was raised.</param>
+            <param name="applicationName">Name of the application where this event was raised.</param>
+            <param name="sent">the date and time when the event was raised on the remote server.</param>
+            <param name="param">The data parameter that is sent with this event.</param>
+        </member>
+        <member name="P:EPiServer.Events.Providers.EventReceivedEventArgs.EventId">
+            <summary>
+            Gets the identity of the current event.
+            </summary>
+        </member>
+        <member name="P:EPiServer.Events.Providers.EventReceivedEventArgs.RaiserId">
+            <summary>
+            Gets the id of the part that raised this event.
+            </summary>
+        </member>
+        <member name="P:EPiServer.Events.Providers.EventReceivedEventArgs.ServerName">
+            <summary>
+            Gets the name of the server where this event was raised.
+            </summary>
+        </member>
+        <member name="P:EPiServer.Events.Providers.EventReceivedEventArgs.ApplicationName">
+            <summary>
+            Gets the name of the IIS application where this event was raised.
+            </summary>
+        </member>
+        <member name="P:EPiServer.Events.Providers.EventReceivedEventArgs.Sent">
+            <summary>
+            Gets the date and time when the event was raised at the remote server.
+            </summary>
+        </member>
+        <member name="P:EPiServer.Events.Providers.EventReceivedEventArgs.Param">
+            <summary>
+            Gets or sets the data parameter that should be sent with this event.
+            </summary>
+        </member>
+        <member name="T:EPiServer.Events.Providers.EventMissedEventArgs">
+            <summary>
+            Holds event data about remote event that was missed. 
+            </summary>
+        </member>
+        <member name="M:EPiServer.Events.Providers.EventMissedEventArgs.#ctor(System.Guid)">
+            <summary>
+            Initializes a new instance of the <see cref="T:EPiServer.Events.EventNotificationEventArgs"/> class.
+            </summary>
+            <param name="eventId">The event identity.</param>
+        </member>
+        <member name="P:EPiServer.Events.Providers.EventMissedEventArgs.EventId">
+            <summary>
+            Gets the identity of the current event.
+            </summary>
+        </member>
+        <member name="M:EPiServer.Events.Providers.EventSequenceList.VerifySequence">
+            <summary>
+            Verifies that there are no gaps in the sequence numbering of all items in the EventSequenceList.
+            </summary>
+            <returns>True if the sequence doesn't contain any gaps; otherwise false.</returns>
+            <remarks>All verified items will be removed after this method is called.</remarks>
+        </member>
+        <member name="M:EPiServer.Events.Providers.EventSequenceList.VerifySequence(System.DateTime)">
+            <summary>
+            Verifies that there are no gaps in the sequence numbering of all items 
+            in the EventSequenceList with a time stamp before the provided time.
+            </summary>
+            <param name="evaluationLimit">Cut-off time after which no items should be verified or removed.</param>
+            <returns>True if the sequence doesn't contain any gaps; otherwise false.</returns>
+            <remarks>All verified items will be removed after this method is called.</remarks>
+        </member>
+        <member name="M:EPiServer.Events.Providers.EventSequenceList.VerifySequence(System.DateTime,System.Boolean)">
+            <summary>
+            Verifies that there are no gaps in the sequence numbering of all items 
+            in the EventSequenceList with a time stamp before the provided time.
+            </summary>
+            <param name="evaluationLimit">Cut-off time after which no items should be verified or removed.</param>
+            <param name="removeVerified">If true all verified items not needed for future verification are removed.</param>
+            <returns>True if the sequence doesn't contain any gaps; otherwise false.</returns>
+        </member>
+        <member name="M:EPiServer.Events.Providers.EventSequenceList.Add(EPiServer.Events.Providers.EventSequence)">
+            <summary>
+            Adds an EventSequence instance to the list, 
+            ensuring that not two items with the same sequence numbers are added.
+            </summary>
+            <param name="sequence">The EventSequence instance to Add</param>
+            <returns>True if the sequence was added to the list; if it already existed false.</returns>
+            <remarks>This method is not thread safe.</remarks>
+        </member>
+        <member name="P:EPiServer.Events.Providers.EventSequenceList.Count">
+            <summary>
+            Gets the number current items in the list.
+            </summary>
+        </member>
+        <member name="P:EPiServer.Events.Providers.EventSequenceList.SyncRoot">
+            <summary>
+            Gets an object that can be used to synchronize access to the <see cref="T:EPiServer.Events.Providers.EventSequenceList"/>.
+            </summary>
+        </member>
+        <member name="T:EPiServer.Events.Providers.EventSiteRegistry">
+            <summary>
+            Class responsible for maitaining a register of sites participating in the event framework.
+            </summary>
+        </member>
+        <member name="T:EPiServer.Events.Providers.IEventSiteRegistry">
+            <summary>
+            Represents a service responsible for maitaining a register of sites involved in the event framework.
+            </summary>
+        </member>
+        <member name="M:EPiServer.Events.Providers.IEventSiteRegistry.Add(EPiServer.Events.Providers.EventSite,EPiServer.Events.Clients.RegistrationType)">
+            <summary>
+            Registers the provided site with this <see cref="T:EPiServer.Events.Providers.EventSiteRegistry"/> instance.
+            Only one site per application domain can be registered with the RegistrationType.EventPublisher value. It is this site's identity that is used
+            when an instance of an <see cref="T:EPiServer.Events.Clients.Event"/> uses this class to raise a remote event.
+            </summary>
+            <param name="site">The site to add to the register.</param>
+            <param name="registrationType">The type of registration to use.</param>
+            <exception cref="T:System.InvalidOperationException">Thrown if a site already has been registered as an publisher or if the site is already registered as a subscriber.</exception>
+        </member>
+        <member name="M:EPiServer.Events.Providers.IEventSiteRegistry.Remove(System.Guid)">
+            <summary>
+            Removes the site with the provided <paramref name="uniqueId"/> from this <see cref="T:EPiServer.Events.Providers.EventSiteRegistry"/> instance.
+            </summary>
+            <param name="uniqueId">The unique id representing the remote site.</param>
+            <returns>True if the site was found and removed; otherwise false.</returns>
+        </member>
+        <member name="M:EPiServer.Events.Providers.IEventSiteRegistry.Clear">
+            <summary>
+            Removes all registered sites from this <see cref="T:EPiServer.Events.Providers.EventSiteRegistry"/> instance.
+            </summary>
+        </member>
+        <member name="P:EPiServer.Events.Providers.IEventSiteRegistry.Count">
+            <summary>
+            Gets the number of sites registered as subscribers with this <see cref="T:EPiServer.Events.Providers.EventSiteRegistry"/> instance.
+            </summary>
+        </member>
+        <member name="P:EPiServer.Events.Providers.IEventSiteRegistry.Publisher">
+            <summary>
+            Gets the site that has been registered as a publisher with this <see cref="T:EPiServer.Events.Providers.EventSiteRegistry"/> instance. 
+            If no publisher has been registered this property returns null.
+            </summary>
+        </member>
+        <member name="P:EPiServer.Events.Providers.IEventSiteRegistry.Subscribers">
+            <summary>
+            Gets all sites that has been registered as subscribers with this <see cref="T:EPiServer.Events.Providers.EventSiteRegistry"/> instance.
+            </summary>
+        </member>
+        <member name="M:EPiServer.Events.Providers.EventSiteRegistry.Add(EPiServer.Events.Providers.EventSite,EPiServer.Events.Clients.RegistrationType)">
+            <inheritdoc />
+        </member>
+        <member name="M:EPiServer.Events.Providers.EventSiteRegistry.Remove(System.Guid)">
+            <inheritdoc />
+        </member>
+        <member name="M:EPiServer.Events.Providers.EventSiteRegistry.Clear">
+            <inheritdoc />
+        </member>
+        <member name="P:EPiServer.Events.Providers.EventSiteRegistry.Count">
+            <inheritdoc />
+        </member>
+        <member name="P:EPiServer.Events.Providers.EventSiteRegistry.Publisher">
+            <inheritdoc />
+        </member>
+        <member name="P:EPiServer.Events.Providers.EventSiteRegistry.Subscribers">
+            <inheritdoc />
+        </member>
+        <member name="T:EPiServer.Events.Remote.CredentialsEventArg">
+            <summary>
+            Ths class can be used of modification UserName/password before to create proxy / channel
+            <seealso cref="P:EPiServer.Events.Remote.EventReplicationWCFProviders.CredentialsEvent"/>
+            This is useful when you will programtically to set username and password for the binding, 
+            one senario is when the certificate uses in respective to http binding
+            </summary>
+        </member>
+        <member name="M:EPiServer.Events.Remote.CredentialsEventArg.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="P:EPiServer.Events.Remote.CredentialsEventArg.Credentials"/> class.
+            </summary>
+            <param name="endpoint">The endpoint.</param>
+        </member>
+        <member name="P:EPiServer.Events.Remote.CredentialsEventArg.Endpoint">
+            <summary>
+            Gets or sets the endpoint.
+            </summary>
+            <value>The endpoint.</value>
+        </member>
+        <member name="P:EPiServer.Events.Remote.CredentialsEventArg.Credentials">
+            <summary>
+            Gets or sets the credentials.
+            </summary>
+            <value>The credentials.</value>
+        </member>
+        <member name="T:EPiServer.Events.Remote.EventReplicationWCFProviders">
+            <summary>
+            The EventReplicationWCFProviders class reads all Endpoint in webconfig and create an EventReplicationProvider class for each.
+            Befor creating the EventReplicationProvider it sends an Credential event if some one will put username and password for the proxy.
+            </summary>
+        </member>
+        <member name="M:EPiServer.Events.Remote.EventReplicationWCFProviders.InitializeEventReplicationProviders">
+            <summary>
+            Initializes the event replication providers.
+            Iterate all Endpoints and try to create EventReplication WCF provider
+            </summary>
+        </member>
+        <member name="M:EPiServer.Events.Remote.EventReplicationWCFProviders.UnInitializeEventReplicationProviders">
+            <summary>
+            Clear the EndPoint and Event Replication Providers.
+            </summary>
+        </member>
+        <member name="M:EPiServer.Events.Remote.EventReplicationWCFProviders.AddEventReplicationProvider(System.String,EPiServer.Events.Remote.EventReplicationProvider)">
+            <summary>
+            Adds the EventReplication WCF provider.
+            </summary>
+            <param name="endPointName">End name of the point.</param>
+            <param name="eventRepl">The event repl.</param>
+            This class uses mostly for Unit Test
+        </member>
+        <member name="M:EPiServer.Events.Remote.EventReplicationWCFProviders.AddEventReplicationProvider(System.String)">
+            <summary>
+            Adds the repl WCF provider.
+            </summary>
+            <param name="endPointName">End name of the point.</param>
+        </member>
+        <member name="M:EPiServer.Events.Remote.EventReplicationWCFProviders.GetEndPoints">
+            <summary>
+            Gets the end points.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:EPiServer.Events.Remote.EventReplicationWCFProviders.RaiseEvent(System.Guid,System.String,System.Int32,System.Byte[],System.Guid,System.Object)">
+            <summary>
+            Raises the event.
+            </summary>
+            <param name="raiserId">The raiser id.</param>
+            <param name="siteId">The site id.</param>
+            <param name="sequenceNumber">The sequence number.</param>
+            <param name="verificationData">The verification data.</param>
+            <param name="eventId">The event id.</param>
+            <param name="param">The param.</param>
+        </member>
+        <member name="M:EPiServer.Events.Remote.EventReplicationWCFProviders.RaiseEvent(EPiServer.Events.EventMessage)">
+            <summary>
+            Raises the event.
+            </summary>
+            <param name="message">The message.</param>
+        </member>
+        <member name="M:EPiServer.Events.Remote.EventReplicationWCFProviders.TryRaiseEvent(EPiServer.Events.Remote.EventReplicationProvider,System.Guid,System.String,System.Int32,System.Byte[],System.Guid,System.Object)">
+            <summary>
+            Tries the raise event. Return false if occurs CommunicationException when try to raise event by proxy.  
+            </summary>
+            <param name="eventReplProvider">The event repl provider.</param>
+            <param name="raiserId">The raiser id.</param>
+            <param name="siteId">The site id.</param>
+            <param name="sequenceNumber">The sequence number.</param>
+            <param name="verificationData">The verification data.</param>
+            <param name="eventId">The event id.</param>
+            <param name="param">The param.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EPiServer.Events.Remote.EventReplicationWCFProviders.TryRaiseEvent(EPiServer.Events.Remote.EventReplicationProvider,EPiServer.Events.EventMessage)">
+            <summary>
+            Tries the raise event. Return false if occurs CommunicationException when try to raise event by proxy.
+            </summary>
+            <param name="eventReplicationProvider">The event replication provider.</param>
+            <param name="message">The message.</param>
+            <returns></returns>
+        </member>
+        <member name="P:EPiServer.Events.Remote.EventReplicationWCFProviders.Instance">
+            <summary>
+            Gets the instance.
+            </summary>
+            <value>The instance.</value>
+        </member>
+        <member name="E:EPiServer.Events.Remote.EventReplicationWCFProviders.CredentialsEvent">
+            <summary>
+            Occurs when [credentials event].
+            </summary>
+        </member>
+        <member name="T:EPiServer.Events.Remote.EventReplicationWCFProvider">
+            <summary>
+            The EventReplicationWCFProvider class reads all EndPoint Client and create 
+            </summary>
+        </member>
+        <member name="T:EPiServer.Events.Remote.EventReplicationProvider">
+            <summary>
+            Base class for event replication providers. 
+            An event replication provider is a class that can provide an object implementing the IEventReplication interface.
+            </summary>
+        </member>
+        <member name="M:EPiServer.Events.Remote.EventReplicationProvider.NewReplicator">
+            <summary>
+            Gets the provider
+            </summary>
+        </member>
+        <member name="M:EPiServer.Events.Remote.EventReplicationWCFProvider.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:EPiServer.Events.Remote.EventReplicationWCFProvider"/> class.
+            </summary>
+            <param name="eventReplicationEndPointName">Name of the event replication end point.</param>
+        </member>
+        <member name="M:EPiServer.Events.Remote.EventReplicationWCFProvider.#ctor(System.String,System.Net.NetworkCredential)">
+            <summary>
+            Initializes a new instance of the <see cref="T:EPiServer.Events.Remote.EventReplicationWCFProvider"/> class.
+            </summary>
+            <param name="eventReplicationEndPointName">Name of the event replication end point.</param>
+            <param name="credentials">The credentials.</param>
+        </member>
+        <member name="M:EPiServer.Events.Remote.EventReplicationWCFProvider.NewReplicator">
+            <summary>
+            Gets the provider
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:EPiServer.Events.Remote.EventReplication">
+            <summary>
+            Class that recieves event wcf event.
+            </summary>
+        </member>
+        <member name="T:EPiServer.Events.ServiceModel.IEventReplication">
+            <summary>
+            This is a WCF service contract for replication of events in EPiServer Events System
+            </summary>
+        </member>
+        <member name="M:EPiServer.Events.ServiceModel.IEventReplication.RaiseEvent(EPiServer.Events.EventMessage)">
+            <summary>
+            Raise the event to all subscribers.
+            </summary>
+            <param name="message">The event message that should be passed on.</param>
+        </member>
+        <member name="M:EPiServer.Events.Remote.EventReplication.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:EPiServer.Events.Remote.EventReplication"/> class.
+            </summary>
+        </member>
+        <member name="M:EPiServer.Events.Remote.EventReplication.#ctor(EPiServer.Events.Providers.WcfEventProvider)">
+            <summary>
+            Initializes a new instance of the <see cref="T:EPiServer.Events.Remote.EventReplication"/> class.
+            </summary>
+            <param name="wcfProvider">The WCF provider.</param>
+        </member>
+        <member name="T:EPiServer.Events.Remote.RemoteEventsManager">
+            <summary>
+            The RemoteEventsManager class is to send and receive remote events
+            The Event class should be used by user code to raise and subscribe to events.
+            </summary>
+        </member>
+        <member name="M:EPiServer.Events.Remote.RemoteEventsManager.RegisterSite(System.String,System.Byte[],EPiServer.Events.Clients.RegistrationType)">
+            <summary>
+            Registers the site with the RemoteEventsManager.
+            Only one site per application domain can be registered with the RegistrationType.EventPublisher value. It is this site's identity that is used
+            when an instance of an Event uses this class to raise a remote event.
+            An exception is thrown if a site is already registered as an event raiser for this application domain.
+            </summary>
+            <param name="siteId">The site id.</param>
+            <param name="siteSecret">The site secret.</param>
+            <param name="regType">The reg type.</param>
+            <returns>A unique id representing the registration.</returns>
+        </member>
+        <member name="M:EPiServer.Events.Remote.RemoteEventsManager.DeRegisterSite(System.Guid)">
+            <summary>
+            Deregisters the site with the RemoteEventsManager.
+            </summary>
+            <param name="uniqueId">The unique id representing the remote site as returned by <see cref="M:EPiServer.Events.Remote.RemoteEventsManager.RegisterSite(System.String,System.Byte[],EPiServer.Events.Clients.RegistrationType)"/>.</param>
+        </member>
+        <member name="M:EPiServer.Events.Remote.RemoteEventsManager.Reset">
+            <summary>
+            Removes all registered sites that were previously registered. Avoid using this.
+            </summary>
+        </member>
+        <member name="M:EPiServer.Events.Remote.RemoteEventsManager.GetSentCount(System.Guid)">
+            <summary>
+            Returns the number of event messages sent for the event identified by <paramref name="eventId"/>
+            </summary>
+            <param name="eventId">The id of the event</param>
+            <returns>A <see cref="T:System.Int64"/>value</returns>
+        </member>
+        <member name="M:EPiServer.Events.Remote.RemoteEventsManager.GetReceivedCount(System.Guid)">
+            <summary>
+            Returns the number of event messages received for the event identified by <paramref name="eventId"/>
+            </summary>
+            <param name="eventId">The id of the event</param>
+            <returns>A <see cref="T:System.Int64"/>value</returns>
+        </member>
+        <member name="P:EPiServer.Events.Remote.RemoteEventsManager.Broker">
+            <summary>
+            Internal accessor to be able to maintain backward compability with static members.
+            </summary>
+        </member>
+        <member name="P:EPiServer.Events.Remote.RemoteEventsManager.Enabled">
+            <summary>
+            Gets or sets a value indicating whether the RemoteEventsManager is enabled or not
+            </summary>
+            <value><c>true</c> if RemoteEventsManager is enabled otherwise, <c>false</c>.</value>
+        </member>
+        <member name="P:EPiServer.Events.Remote.RemoteEventsManager.IsEventClientConfigured">
+            <summary>
+            Gets the is event client configured.
+            </summary>
+        </member>
+        <member name="P:EPiServer.Events.Remote.RemoteEventsManager.EventMissingAfterMilliseconds">
+            <summary>
+            Gets or sets the amount of time in milliseconds that need to elapse for an event to be considered missing.
+            A missing event can only be detected when an event comes out of sequence (i.e. the sequence number
+            is greater that the last plus one)
+            </summary>
+        </member>
+        <member name="P:EPiServer.Events.Remote.RemoteEventsManager.EventReplicationProviders">
+            <summary>
+            Get and sets the provider for event replication
+            </summary>
+        </member>
+        <member name="P:EPiServer.Events.Remote.RemoteEventsManager.HasEventRaiserSite">
+            <summary>
+            Gets a value indicating whether this instance has event raiser site.
+            </summary>
+            <value>
+            	<c>true</c> if this instance has event raiser site; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:EPiServer.Events.Remote.RemoteEventsManager.SiteCount">
+            <summary>
+            Gets the number of sites registered with the RemoteEventManager
+            </summary>
+        </member>
+        <member name="P:EPiServer.Events.Remote.RemoteEventsManager.SyncRoot">
+            <summary>
+            Gets the sync root.
+            The sync root can be used by client code to synchronise thread access to the public members of the class
+            </summary>
+            <value>The sync root.</value>
+        </member>
+        <member name="T:EPiServer.Events.Clients.Event">
+            <summary>
+            The Event class is used to raise and receive events in EPiServer
+            </summary>
+        </member>
+        <member name="M:EPiServer.Events.Clients.Event.#ctor(System.Guid)">
+            <summary>
+            This constructor is not intended for public use; Create Event objects using Event.Get or IEventService.Get.
+            </summary>
+            <param name="id">The id of the event that is instantiated.</param>
+        </member>
+        <member name="M:EPiServer.Events.Clients.Event.#ctor(System.Guid,EPiServer.Events.Providers.IEventBroker,System.Func{System.Boolean})">
+            <summary>
+            This constructor is not intended for public use; Create Event objects using Event.Get or IEventService.Get.
+            </summary>
+            <param name="id">The id of the event that is instantiated.</param>
+            <param name="eventBroker">Service responsible for sending and receiving events remotely.</param>
+            <param name="eventsEnabled">Delegate that provides information if events are enabled.</param>
+        </member>
+        <member name="M:EPiServer.Events.Clients.Event.Raise(System.Guid,System.Object)">
+            <summary>
+            Raise this event.
+            </summary>
+            <param name="raiserId">An unique id representing the object that raises the event.</param>
+            <param name="param">An object that should be send with the event.</param>
+            <remarks>
+            Note that remote events are dispatched asynchronously.
+            </remarks>
+        </member>
+        <member name="M:EPiServer.Events.Clients.Event.Raise(System.Guid,System.Object,EPiServer.Events.Clients.EventRaiseOption)">
+            <summary>
+            Raises this event using the raise options specified.
+            </summary>
+            <param name="raiserId">An unique id representing the object that raises the event.</param>
+            <param name="param">An object that should be send with the event.</param>
+            <param name="raiseOption">An option indicating whether this event should be broadcasted or just raised on the local site.</param>
+            <remarks>
+            Note that remote events are dispatched asynchronously.
+            </remarks>
+        </member>
+        <member name="M:EPiServer.Events.Clients.Event.RaiseAsync(System.Guid,System.Object,EPiServer.Events.Clients.EventRaiseOption)">
+            <summary>
+            Raises this event asynchronously using the raise options specified.
+            </summary>
+            <param name="raiserId">An unique id representing the object that raises the event.</param>
+            <param name="param">An object that should be send with the event.</param>
+            <param name="raiseOption">An option indicating whether this event should be broadcasted or just raised on the local site.</param>
+            <returns>A Task object that allows for synchronisation of this event.</returns>
+        </member>
+        <member name="M:EPiServer.Events.Clients.Event.Get(System.Guid)">
+            <summary>
+            Gets the specified event.
+            </summary>
+            <param name="eventId">An event id of an Event object</param>
+            <returns>The Event object for the eventId specified</returns>
+        </member>
+        <member name="M:EPiServer.Events.Clients.Event.GetAll">
+            <summary>
+            Returns all of the <see cref="T:EPiServer.Events.Clients.Event"/> instances registered
+            </summary>
+            <returns>A collection of event objects</returns>
+        </member>
+        <member name="E:EPiServer.Events.Clients.Event.Raising">
+            <summary>
+            Occurs when this event is about to be raised.
+            </summary>
+        </member>
+        <member name="E:EPiServer.Events.Clients.Event.Raised">
+            <summary>
+            Occurs when this event is raised.
+            </summary>
+        </member>
+        <member name="E:EPiServer.Events.Clients.Event.Missed">
+            <summary>
+            Occurs when a remote message about this event was missed.
+            </summary>
+        </member>
+        <member name="P:EPiServer.Events.Clients.Event.Id">
+            <summary>
+            Gets the unique id of this event instance.
+            </summary>
+        </member>
+        <member name="P:EPiServer.Events.Clients.Event.RaisedCount">
+            <summary>
+            Gets the number of times this event has been raised.
+            </summary>
+        </member>
+        <member name="P:EPiServer.Events.Clients.Event.MissedCount">
+            <summary>
+            Gets the number of times a raise of this event remotely has been missed.
+            </summary>
+        </member>
+        <member name="P:EPiServer.Events.Clients.Event.SentCount">
+            <summary>
+            Gets the number of times this event has been received from a remote source.
+            </summary>
+        </member>
+        <member name="P:EPiServer.Events.Clients.Event.ReceivedCount">
+            <summary>
+            Gets the number of times this event has been received from a remote source.
+            </summary>
+        </member>
+        <member name="P:EPiServer.Events.Clients.Event.RemoteSendBlocked">
+            <summary>
+            Gets or sets a value indicating whether this <see cref="T:EPiServer.Events.Clients.Event"/> is blocked for remote events. 
+            That is no remote events will be raised to subscribers.
+            </summary>
+            <value><c>true</c> if remote events are blocked; otherwise, <c>false</c>.</value>
+        </member>
+        <member name="P:EPiServer.Events.Clients.Event.EventsEnabled">
+            <summary>
+            True if local event processing is enabled, false otherwise
+            </summary>
+        </member>
+        <member name="T:EPiServer.Events.Clients.EventRaiseOption">
+            <summary>
+            Valid options when raising an event
+            </summary>
+        </member>
+        <member name="F:EPiServer.Events.Clients.EventRaiseOption.RaiseBroadcast">
+            <summary>
+            Raise the event on the same site, with other subscribed sites on the same server and broadcast to other servers
+            </summary>
+        </member>
+        <member name="F:EPiServer.Events.Clients.EventRaiseOption.RaiseSite">
+            <summary>
+            Raise the event on the same site only
+            </summary>
+        </member>
+        <member name="T:EPiServer.Events.Providers.EventSite">
+            <summary>
+            Represents a site participating in the Event framework.
+            </summary>
+        </member>
+        <member name="F:EPiServer.Events.Providers.EventSite.ValueComparer">
+            <summary>
+            A comparer that only compares the values of each instance and ignores the UniqueId.
+            </summary>
+        </member>
+        <member name="M:EPiServer.Events.Providers.EventSite.#ctor(System.String,System.Byte[])">
+            <summary>
+            Initializes a new instance of the <see cref="T:EPiServer.Events.Providers.EventSite"/> class.
+            </summary>
+            <param name="siteId">The identifier string of the site.</param>
+            <param name="secret">The site secret.</param>
+        </member>
+        <member name="P:EPiServer.Events.Providers.EventSite.UniqueId">
+            <summary>
+            Gets the unique identifier of this <see cref="T:EPiServer.Events.Providers.EventSite"/> instance.
+            This property is populated automatically when a new instance is created.
+            </summary>
+        </member>
+        <member name="P:EPiServer.Events.Providers.EventSite.SiteId">
+            <summary>
+            Gets the identifier of the site referenced by this <see cref="T:EPiServer.Events.Providers.EventSite"/> instance.
+            </summary>
+        </member>
+        <member name="P:EPiServer.Events.Providers.EventSite.Secret">
+            <summary>
+            Gets the site secret added to this <see cref="T:EPiServer.Events.Providers.EventSite"/> instance.
+            </summary>
+        </member>
+        <member name="T:EPiServer.Events.Proxies.EventReplicationProxy">
+            <summary>
+            This class is not for public use.
+            </summary>
+        </member>
+        <member name="T:EPiServer.Events.Clients.IEventHandler">
+            <summary>
+            Defines the interface that classes should implement to receive events from the event service via the EventServiceClient.
+            The Event class should be used to by user code receive events under normal circumstances. Only implement a class based on
+            this interface and use it directly with the EventServiceClient for specialized behaviour.
+            </summary>
+        </member>
+        <member name="M:EPiServer.Events.ActiveServerCalculator.ActiveServers">
+            <summary>
+            Gives an indication of how many servers are currently active in the system.
+            Note that his calculation has some safe-guards to prevent quick changes.
+            </summary>
+            <returns>Number of active servers.</returns>
+        </member>
+        <member name="M:EPiServer.Events.ActiveServerCalculator.GetActiveServers">
+            <summary>
+            Get the currently active servers
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:EPiServer.Events.ActiveServerCalculator.GetActiveServers(System.TimeSpan)">
+            <summary>
+            Get the currently active servers
+            </summary>
+            <param name="inactiveTimeLimit">The time limit after which a server is considered inactive.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EPiServer.Events.ActiveServerCalculator.VerifyServerCount(System.Int32)">
+            <summary>
+            Long running task that verifies the server count by actively requesting state update and waiting for the result.
+            </summary>
+        </member>
+        <member name="T:EPiServer.Events.EventsServiceKnownTypesLookup">
+            <summary>
+            Class for retrieving all types decorated with the <see cref="T:EPiServer.Events.EventsServiceKnownTypeAttribute"/>
+            used to DataContract serialization of event messages.
+            </summary>
+        </member>
+        <member name="M:EPiServer.Events.EventsServiceKnownTypesLookup.#ctor(EPiServer.Framework.TypeScanner.ITypeScannerLookup)">
+            <summary>
+            Initializes a new instance of the <see cref="T:EPiServer.Events.EventsServiceKnownTypesLookup"/> class.
+            </summary>
+            <param name="typeScanner">The type scanner used.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown if the <para>typeScanner</para> parameter is null.</exception>
+        </member>
+        <member name="M:EPiServer.Events.EventsServiceKnownTypesLookup.GetKnownTypes(System.Reflection.ICustomAttributeProvider)">
+            <summary>
+            Gets the known types for the <see cref="T:EPiServer.Events.ServiceModel.IEventReplication"/> service.
+            </summary>
+            <param name="provider">The custom attribute provider</param>
+            <returns>The known types for the <see cref="T:EPiServer.Events.ServiceModel.IEventReplication"/> service</returns>
+            <remarks>
+            This method is used for defining ServiceKnownTypes for the IEventReplication service, 
+            see the MSDN documentation for ServiceKnownTypeAttribute 
+            (http://msdn.microsoft.com/en-us/library/ms554667.aspx) for usage information
+            </remarks>
+        </member>
+        <member name="P:EPiServer.Events.EventsServiceKnownTypesLookup.KnownTypes">
+            <summary>
+            Gets all types that has been decorated with the <see cref="T:EPiServer.Events.EventsServiceKnownTypeAttribute"/>.
+            </summary>
+        </member>
+        <member name="T:Microsoft.ServiceModel.Samples.AsyncResult">
+            <summary>
+            A generic base class for IAsyncResult implementations
+            that wraps a ManualResetEvent.
+            </summary>
+        </member>
+        <member name="T:Microsoft.ServiceModel.Samples.InputQueue`1">
+            <summary>
+            Handles asynchronous interactions between producers and consumers. 
+            Producers can dispatch available data to the input queue, 
+            where it will be dispatched to a waiting consumer or stored until a
+            consumer becomes available. Consumers can synchronously or asynchronously
+            request data from the queue, which will be returned when data becomes
+            available.
+            </summary>
+            <typeparam name="T">The concrete type of the consumer objects that are waiting for data.</typeparam>
+        </member>
+        <member name="T:Microsoft.ServiceModel.Samples.UdpBinding">
+            <summary>
+            Binding for Udp. This is our "sample profile" for Udp, which uses Text+Soap 1.2 
+            and allows for variation in Reliability capabilities. If ReliableSessionEnabled is set
+            then we will layer RM+CompositeDuplex on top of Udp. Otherwise we will just
+            have Udp on our stack.  
+            </summary>
+        </member>
+        <member name="M:Microsoft.ServiceModel.Samples.UdpBinding.CreateBindingElements">
+            <summary>
+            Create the set of binding elements that make up this binding. 
+            NOTE: order of binding elements is important.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Microsoft.ServiceModel.Samples.UdpBindingCollectionElement">
+            <summary>
+            Binding Section for Udp. Implements configuration for SampleProfileUdpBinding.
+            </summary>
+        </member>
+        <member name="T:Microsoft.ServiceModel.Samples.UdpBindingElementImporter">
+            <summary>
+            Policy import/export for Udp
+            </summary>
+        </member>
+        <member name="T:Microsoft.ServiceModel.Samples.UdpChannelFactory">
+            <summary>
+            IChannelFactory implementation for Udp.
+            
+            Supports IOutputChannel only, as Udp is fundamentally
+            a datagram protocol.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ServiceModel.Samples.UdpChannelFactory.OnCreateChannel(System.ServiceModel.EndpointAddress,System.Uri)">
+            <summary>
+            Create a new Udp Channel. Supports IOutputChannel.
+            </summary>
+            <param name="remoteAddress">The address of the remote endpoint</param>
+            <param name="via"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Microsoft.ServiceModel.Samples.UdpConstants">
+            <summary>
+            Collection of constants used by the Udp Channel classes
+            </summary>
+        </member>
+        <member name="M:Microsoft.ServiceModel.Samples.UdpChannelHelpers.ConvertTransferException(System.Net.Sockets.SocketException)">
+            <summary>
+            The Channel layer normalizes exceptions thrown by the underlying networking implementations
+            into subclasses of CommunicationException, so that Channels can be used polymorphically from
+            an exception handling perspective.
+            </summary>
+        </member>
+        <member name="T:Microsoft.ServiceModel.Samples.UdpChannelListener">
+            <summary>
+            IListenerFactory implementation for Udp.
+            
+            Supports IInputChannel only, as Udp is fundamentally
+            a datagram protocol. Uses a listening UDP socket for each
+            Factory instance, then demuxes to the appropriate IInputListener
+            based on the registered filters. More advanced implementations could factor
+            out the listening socket and demux from this listening object
+            to separate factories based on a framing Via.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ServiceModel.Samples.UdpChannelListener.OnAbort">
+            <summary>
+            Shutdown ungracefully
+            </summary>
+        </member>
+        <member name="M:Microsoft.ServiceModel.Samples.UdpChannelListener.OnClose(System.TimeSpan)">
+            <summary>
+            Shutdown gracefully
+            </summary>
+        </member>
+        <member name="M:Microsoft.ServiceModel.Samples.UdpChannelListener.OnOpening">
+            <summary>
+            Initialize any objects we're going to need for the opened factory
+            </summary>
+        </member>
+        <member name="M:Microsoft.ServiceModel.Samples.UdpChannelListener.OnOpen(System.TimeSpan)">
+            <summary>
+            Open the listener factory for use. Ensures our UDP socket is bound
+            </summary>
+        </member>
+        <member name="M:Microsoft.ServiceModel.Samples.UdpChannelListener.OnOpened">
+            <summary>
+            Open has completed, start an asynchronous receive on our socket.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ServiceModel.Samples.UdpChannelListener.Dispatch(System.ServiceModel.Channels.Message)">
+            <summary>
+            Matches an incoming message to its waiting listener,
+            using the FilterTable to dispatch the message to the correc
+            listener. If no listener is waiting for the message, it is silently
+            discarded.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ServiceModel.Samples.UdpChannelListener.InitializeUniqueUri(System.String)">
+            <summary>
+            Used to get a unique uri (by CompositeDuplexChannelFactory for example).
+            We get a unique TCP port by binding to "port 0"
+            </summary>
+        </member>
+        <member name="T:Microsoft.ServiceModel.Samples.UdpOutputChannel">
+            <summary>
+            IOutputChannel implementation for Udp.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ServiceModel.Samples.UdpOutputChannel.OnOpen(System.TimeSpan)">
+            <summary>
+            Open the channel for use. We don't have any blocking work to perform so this is a no-op
+            </summary>
+        </member>
+        <member name="M:Microsoft.ServiceModel.Samples.UdpOutputChannel.OnAbort">
+            <summary>
+            Shutdown ungracefully
+            </summary>
+        </member>
+        <member name="M:Microsoft.ServiceModel.Samples.UdpOutputChannel.OnClose(System.TimeSpan)">
+            <summary>
+            Shutdown gracefully
+            </summary>
+        </member>
+        <member name="M:Microsoft.ServiceModel.Samples.UdpOutputChannel.EncodeMessage(System.ServiceModel.Channels.Message)">
+            <summary>
+            Address the Message and serialize it into a byte array.
+            </summary>
+        </member>
+        <member name="T:Microsoft.ServiceModel.Samples.UdpOutputChannel.SendAsyncResult">
+            <summary>
+            Implementation of async send for Udp. 
+            </summary>
+        </member>
+        <member name="T:Microsoft.ServiceModel.Samples.UdpTransportBindingElement">
+            <summary>
+            Udp Binding Element.  
+            Used to configure and construct Udp ChannelFactories and ChannelListeners.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ServiceModel.Samples.UdpTransportBindingElement.CanBuildChannelFactory``1(System.ServiceModel.Channels.BindingContext)">
+            <summary>
+            Used by higher layers to determine what types of channel factories this
+            binding element supports. Which in this case is just IOutputChannel.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ServiceModel.Samples.UdpTransportBindingElement.CanBuildChannelListener``1(System.ServiceModel.Channels.BindingContext)">
+            <summary>
+            Used by higher layers to determine what types of channel listeners this
+            binding element supports. Which in this case is just IInputChannel.
+            </summary>
+        </member>
+        <member name="T:Microsoft.ServiceModel.Samples.UdpTransportElement">
+            <summary>
+            Configuration section for Udp. 
+            </summary>
+        </member>
+    </members>
+</doc>

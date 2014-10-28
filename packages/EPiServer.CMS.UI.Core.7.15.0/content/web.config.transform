@@ -1,0 +1,8 @@
+<configuration>
+  <episerver.shell>
+    <protectedModules>
+      <add name="Shell" />
+      <add name="CMS" />
+    </protectedModules>
+  </episerver.shell>
+</configuration>
